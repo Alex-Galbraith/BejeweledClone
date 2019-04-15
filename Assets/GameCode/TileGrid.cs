@@ -79,22 +79,27 @@ namespace TSwapper {
         /// <param name="toY">Y pos to exclusive</param>
         /// <param name="shiftX">X shift</param>
         /// <param name="shiftY">Y shift</param>
-        /// <returns>True if successful. False if there were occupied tiles in the destination range.</returns>
-        public bool ShiftTilesSafe(int fromX, int fromY, int toX, int toY, int shiftX, int shiftY) {
+        /// <returns>List of updated tiles if successful. Null if there were occupied tiles in the destination range.</returns>
+        public Tile[] ShiftTilesSafe(int fromX, int fromY, int toX, int toY, int shiftX, int shiftY) {
             if (!CheckBounds(fromX, fromY))
-                return false;
+                return null;
             if (!CheckBounds(toX, toY))
-                return false;
+                return null;
 
             if (!CheckBounds(fromX + shiftX, fromY + shiftY))
-                return false;
+                return null;
             if (!CheckBounds(toX + shiftX, toY + shiftY))
-                return false;
+                return null;
+
+            
 
             int minX = Min(fromX, toX);
             int minY = Min(fromY, toY);
             int maxX = Max(fromX, toX);
             int maxY = Max(fromY, toY);
+
+            int sizeX = maxX - minX;
+            int sizeY = maxY - minY;
 
             int incX = (int)Sign(shiftX);
             int incY = (int)Sign(shiftY);
@@ -107,24 +112,28 @@ namespace TSwapper {
                         continue;
                     //ensure unoccupied
                     if (tiles[i, j] != null)
-                        return false;
+                        return null;
                 }
             }
 
+            Tile[] rTiles = new Tile[sizeX * sizeY];
+
             int startAtX = shiftX > 0 ? maxX : minX;
             int startAtY = shiftY > 0 ? maxY : minY;
-            
+
             //Shift tiles
-            for (int i = maxX-minX; i >=0; i++) {
-                for (int j = maxY - minY; j >= 0; j++) {
+            int tcount = 0;
+            for (int i = sizeX; i >=0; i++) {
+                for (int j = sizeY; j >= 0; j++) {
                     Vector2Int p = new Vector2Int(startAtX + i * incX + shiftX, startAtY + j * incY + shiftY);
                     tiles[p.x, p.y] = tiles[startAtX + i * incX, startAtY + j * incY];
                     tiles[p.x, p.y].GridPos = p;
                     tiles[startAtX + i * incX, startAtY + j * incY] = null;
+                    rTiles[tcount++] = tiles[p.x, p.y];
                 }
             }
 
-            return true;
+            return rTiles;
         }
 
     }
