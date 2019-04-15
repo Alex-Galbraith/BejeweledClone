@@ -32,6 +32,10 @@ namespace TSwapper {
 
         SpriteRenderer spriteRenderer;
 
+        private void Awake() {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
         /// <summary>
         /// Only called if isComplex is true. Use this function to perform special actions after
         /// this tile has been flipped. We could use events for this, but it would be a little 
@@ -47,6 +51,13 @@ namespace TSwapper {
         /// over the top for this project.
         /// </summary>
         public void NeighbourFlipped() {
+
+        }
+
+        /// <summary>
+        /// This tile has been matched! Spawn the particle effect, animate out, and destroy.
+        /// </summary>
+        public void OnMatched() {
 
         }
     }
