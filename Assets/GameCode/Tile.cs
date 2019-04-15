@@ -32,6 +32,22 @@ namespace TSwapper {
 
         SpriteRenderer spriteRenderer;
 
+        /// <summary>
+        /// Used for tracking position in TileGrid
+        /// </summary>
+        internal Vector2Int GridPos {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Used for tracking whether the tile exists in a TileGrid
+        /// </summary>
+        internal bool InGrid {
+            get;
+            set;
+        }
+
         private void Awake() {
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
