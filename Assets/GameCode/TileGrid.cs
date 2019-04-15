@@ -71,7 +71,8 @@ namespace TSwapper {
         }
 
         /// <summary>
-        /// Shift the specified area a number of tiles. Only works if the destination range is clear.
+        /// Shift the specified area a number of tiles. If safe is enabled, only works if the destination range is clear.
+        /// If safe is disabled, will silently overwrite occupied tiles;
         /// </summary>
         /// <param name="fromX">X pos from inclusive</param>
         /// <param name="fromY">Y pos from inclusive</param>
@@ -79,8 +80,9 @@ namespace TSwapper {
         /// <param name="toY">Y pos to exclusive</param>
         /// <param name="shiftX">X shift</param>
         /// <param name="shiftY">Y shift</param>
-        /// <returns>List of updated tiles if successful. Null if there were occupied tiles in the destination range.</returns>
-        public Tile[] ShiftTilesSafe(int fromX, int fromY, int toX, int toY, int shiftX, int shiftY) {
+        /// <param name="safe">Y shift</param>
+        /// <returns>List of updated tiles if successful. Null if inputs were out of bounds, or, if safe is enabled, there were occupied tiles in the destination range.</returns>
+        public Tile[] ShiftTiles(int fromX, int fromY, int toX, int toY, int shiftX, int shiftY, bool safe = true) {
             if (!CheckBounds(fromX, fromY))
                 return null;
             if (!CheckBounds(toX, toY))
@@ -103,16 +105,20 @@ namespace TSwapper {
 
             int incX = (int)Sign(shiftX);
             int incY = (int)Sign(shiftY);
-            //This is an inefficient way to go about this, but we are dealing with such a small 
-            //number of items, and this is far more readable
-            for (int i = fromX + shiftX; i < toX + shiftX; i += incX) { 
-                for (int j = fromY + shiftY; j < toY + shiftY; j += incY) {
-                    //We only need to check non overlapping regions
-                    if (i < toX && i >= fromX && j < toY && j >= fromY)
-                        continue;
-                    //ensure unoccupied
-                    if (tiles[i, j] != null)
-                        return null;
+
+            //if safe, do occupancy check
+            if (safe) { 
+                //This is an inefficient way to go about this, but we are dealing with such a small 
+                //number of items, and this is far more readable
+                for (int i = fromX + shiftX; i < toX + shiftX; i += incX) { 
+                    for (int j = fromY + shiftY; j < toY + shiftY; j += incY) {
+                        //We only need to check non overlapping regions
+                        if (i < toX && i >= fromX && j < toY && j >= fromY)
+                            continue;
+                        //ensure unoccupied
+                        if (tiles[i, j] != null)
+                            return null;
+                    }
                 }
             }
 
@@ -135,6 +141,7 @@ namespace TSwapper {
 
             return rTiles;
         }
+        
 
     }
 }
