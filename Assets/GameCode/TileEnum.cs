@@ -13,4 +13,8 @@ namespace TSwapper {
         BOMB,
         ANY
     }
+
+    public enum PoolGroup {
+        BASIC
+    }
 }

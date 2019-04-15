@@ -11,12 +11,25 @@ namespace TSwapper {
     public class Tile : MonoBehaviour
     {
         public TileType tileType;
+        public PoolGroup poolGroup;
+
+        /// <summary>
+        /// What tiles does this tile match with? If tile A matches with Tile B,
+        /// but B not with A, then the match is successful.
+        /// </summary>
+        [Tooltip("What tiles does this tile match with?")]
+        public TileType[] matchesWith;
         /// <summary>
         /// Is this a basic matching tile, or do we need to treat it with
         /// greater care. E.G., do we need to call PostFlip
         /// </summary>
-        [Tooltip("Is this a basic matching tile, or do we need to treat it with greater care?")]
         public bool isComplex = false;
+
+        /// <summary>
+        /// Is this a basic matching tile, or does it have special
+        /// match conditions. Will call CheckMatch if true;
+        /// </summary>
+        public bool isComplexMatch = false;
 
         /// <summary>
         /// This particle will be automatically triggered on death.
@@ -53,6 +66,13 @@ namespace TSwapper {
         }
 
         /// <summary>
+        /// Only called if isComplexMatch is true. Use this function to check if this tile has been flipped.
+        /// </summary>
+        public bool CheckMatch(TileGrid t) {
+            return false;
+        }
+
+        /// <summary>
         /// Only called if isComplex is true. Use this function to perform special actions after
         /// this tile has been flipped. We could use events for this, but it would be a little 
         /// over the top for this project.
@@ -74,6 +94,16 @@ namespace TSwapper {
         /// This tile has been matched! Spawn the particle effect, animate out, and destroy.
         /// </summary>
         public void OnMatched() {
+
+        }
+
+        /// <summary>
+        /// Populates the specified tile with data from the prefab.
+        /// Used by the TilePool.
+        /// </summary>
+        /// <param name="prefab"></param>
+        /// <param name="to"></param>
+        public static void PopulateTile(Tile prefab, Tile to) {
 
         }
     }
