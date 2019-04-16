@@ -60,15 +60,16 @@ namespace TSwapper {
         /// </summary>
         /// <param name="x">X position</param>
         /// <param name="y">Y position</param>
-        /// <returns>False if the position was out of bounds or unoccupied, otherwise true.</returns>
-        public bool RemoveTile(int x, int y) {
+        /// <returns>Null if the position was out of bounds or unoccupied, otherwise returns the tile.</returns>
+        public Tile RemoveTile(int x, int y) {
             if (!CheckBounds(x, y))
-                return false;
+                return null;
             if (tiles[x, y] == null)
-                return false;
+                return null;
+            Tile t = tiles[x, y];
             tiles[x, y].InGrid = false;
             tiles[x, y] = null;
-            return true;
+            return t;
         }
 
         /// <summary>
