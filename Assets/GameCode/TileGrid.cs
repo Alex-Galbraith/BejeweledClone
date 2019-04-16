@@ -7,6 +7,7 @@ namespace TSwapper {
     public class TileGrid : MonoBehaviour {
         [Tooltip("Dimensions of this grid.")]
         public Vector2Int dimensions = new Vector2Int(9, 9);
+        public Vector2 tileSize = new Vector2(1, 1);
 
         private Tile[,] tiles;
 
@@ -68,6 +69,20 @@ namespace TSwapper {
             tiles[x, y].InGrid = false;
             tiles[x, y] = null;
             return true;
+        }
+
+        /// <summary>
+        /// Get the worlspace position of a tile coordinate
+        /// </summary>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
+        /// <returns>Rectangle specifying the worlspace rect this tile occupies.</returns>
+        public Rect GetWorldspaceTilePos(int x, int y) {
+            Rect r = new Rect {
+                min = (((Vector2)transform.position) + Vector2.right * x * tileSize.x + Vector2.up * y * tileSize.y),
+                max = (((Vector2)transform.position) + Vector2.right * x * tileSize.x + Vector2.up * y * tileSize.y + tileSize)
+            };
+            return r;
         }
 
         /// <summary>

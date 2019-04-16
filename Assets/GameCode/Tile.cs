@@ -43,6 +43,7 @@ namespace TSwapper {
         [Tooltip("How much is destroying this tile worth?")]
         public int baseScoreValue;
 
+        [SerializeField]
         SpriteRenderer spriteRenderer;
 
         /// <summary>
@@ -60,6 +61,12 @@ namespace TSwapper {
             get;
             set;
         }
+
+#if UNITY_EDITOR
+        private void OnValidate() {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+#endif
 
         private void Awake() {
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -98,13 +105,28 @@ namespace TSwapper {
         }
 
         /// <summary>
-        /// Populates the specified tile with data from the prefab.
+        /// Populates the specified tile with data from the current tile.
         /// Used by the TilePool.
         /// </summary>
-        /// <param name="prefab"></param>
         /// <param name="to"></param>
-        public static void PopulateTile(Tile prefab, Tile to) {
-
+        public void PopulateTile(Tile to) {
+            if (this.poolGroup != to.poolGroup) {
+                throw new System.ArgumentException("Cannot populate " + to.poolGroup + " from a " + this.poolGroup + ". Poolgroups must match.");
+            }
+            //Copy sprite renderer
+            to.spriteRenderer.sprite = this.spriteRenderer.sprite;
+            to.spriteRenderer.size = this.spriteRenderer.size;
+            to.spriteRenderer.sharedMaterial = this.spriteRenderer.sharedMaterial;
+            to.spriteRenderer.color = this.spriteRenderer.color;
+            to.spriteRenderer.sortingLayerID = this.spriteRenderer.sortingLayerID;
+            to.spriteRenderer.sortingOrder = this.spriteRenderer.sortingOrder;
+            //copy tile data
+            to.tileType = this.tileType;
+            to.baseScoreValue = this.baseScoreValue;
+            to.isComplex = this.isComplex;
+            to.isComplexMatch = this.isComplexMatch;
+            to.matchesWith = (TileType[])this.matchesWith.Clone();
+            to.onDeathParticle = this.onDeathParticle;
         }
     }
 
