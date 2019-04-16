@@ -18,7 +18,8 @@ namespace TSwapper {
         /// but B not with A, then the match is successful.
         /// </summary>
         [Tooltip("What tiles does this tile match with?")]
-        public TileType[] matchesWith;
+        [EnumFlags]
+        public TileType matchesWith;
         /// <summary>
         /// Is this a basic matching tile, or do we need to treat it with
         /// greater care. E.G., do we need to call PostFlip
@@ -125,7 +126,7 @@ namespace TSwapper {
             to.baseScoreValue = this.baseScoreValue;
             to.isComplex = this.isComplex;
             to.isComplexMatch = this.isComplexMatch;
-            to.matchesWith = (TileType[])this.matchesWith.Clone();
+            to.matchesWith = this.matchesWith;
             to.onDeathParticle = this.onDeathParticle;
         }
     }
