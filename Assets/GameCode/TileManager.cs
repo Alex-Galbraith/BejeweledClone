@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 namespace TSwapper { 
+    /// <summary>
+    /// Contains basic tile spawning, shifting, and matching rules.
+    /// </summary>
     public class TileManager : MonoBehaviour
     {
         private TilePool tilePool;
         public TileGrid tileGrid;
+
+        [Tooltip("How many matching in a row is required for a true match.")]
+        public ushort MatchingInARowRequired = 3;
         
         [System.Serializable]
         public struct TileSpawnData {
@@ -19,8 +25,14 @@ namespace TSwapper {
         /// </summary>
         private byte[,] tempData;
 
+        private byte[,] matchData;
+
         private void ClearTemp() {
             System.Array.Clear(tempData, 0, tempData.Length);
+        }
+
+        private void ClearMatch() {
+            System.Array.Clear(matchData, 0, matchData.Length);
         }
 
         private void OnValidate() {
@@ -38,8 +50,9 @@ namespace TSwapper {
         // Start is called before the first frame update
         void Awake()
         {
-            tilePool = new TilePool(this.gameObject);
-            tempData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
+            tilePool    = new TilePool(this.gameObject);
+            tempData    = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
+            matchData   = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
         }
 
         private void Start() {
@@ -69,7 +82,52 @@ namespace TSwapper {
         /// <param name="y">Y position</param>
         /// <returns>True if a match is found, otherwise false</returns>
         public bool CheckMatchTile(int x, int y) {
-            throw new System.NotImplementedException();
+            int matchCount = 1;
+            //check rows
+            for (int i = -MatchingInARowRequired+1; i < MatchingInARowRequired-1; i++) {
+                Tile left   = tileGrid.GetTile(x + i, y);
+                Tile right  = tileGrid.GetTile(x + i + 1, y);
+                if (CheckSimpleMatch(left, right)) {
+                    matchCount++;
+                }
+                else {
+                    matchCount = 1;
+                }
+            }
+            if (matchCount >= MatchingInARowRequired)
+                return true;
+            //check columns
+            for (int i = -MatchingInARowRequired + 1; i < MatchingInARowRequired - 1; i++) {
+                Tile bot = tileGrid.GetTile(x , y + i);
+                Tile top = tileGrid.GetTile(x , y + i + 1);
+                if (CheckSimpleMatch(bot, top)) {
+                    matchCount++;
+                }
+                else {
+                    matchCount = 1;
+                }
+            }
+            if (matchCount >= MatchingInARowRequired)
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if two tiles match each other according to their
+        /// <see cref="Tile.matchesWith"/> parameter. If either tile is null, false is returned.
+        /// </summary>
+        /// <param name="a">Tile A.</param>
+        /// <param name="b">Tile B.</param>
+        /// <returns>true for match, otherwise false.</returns>
+        public static bool CheckSimpleMatch(Tile a, Tile b) {
+            if (a == null || b == null)
+                return false;
+            if ((a.matchesWith & b.tileType) != 0)
+                return true;
+            if ((b.matchesWith & a.tileType) != 0)
+                return true;
+            return false;
         }
 
         /// <summary>
@@ -108,7 +166,7 @@ namespace TSwapper {
         /// </summary>
         private Vector2Int[] Cardinals = new Vector2Int[] { Vector2Int.right, Vector2Int.up, Vector2Int.left, Vector2Int.down };
 
-        private void EnqueueNeighbours(Vector2Int pos, Queue<Vector2Int> queue, TileType mask) {
+        private void EnqueueNeighbours(Vector2Int pos, Queue<Vector2Int> queue, Tile other) {
             foreach (var c in Cardinals) {
                 //skip closed tiles
                 if (tempData[pos.x + c.x, pos.y + c.y] != 0)
@@ -116,19 +174,21 @@ namespace TSwapper {
                 Tile t = tileGrid.GetTile(pos.x + c.x, pos.y + c.y);
 
                 //If the tile is not null and matches our mask, enqueue it
-                if (t != null && (mask & t.matchesWith) != 0)
+                if (t != null && CheckSimpleMatch(t, other))
                     queue.Enqueue(pos + c);
             }
 
         }
 
         /// <summary>
-        /// Gets all connected tiles that form a matching sequence.
+        /// <para>Gets all connected tiles that form a matching sequence.</para> <para> <paramref name="tiles"/> must
+        /// contain enough space to store the whole set, otherwise an underfined subset of the tiles is returned. This
+        /// function is non allocating.</para> <para>Returns the number of connected tiles found.</para>
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="tiles"></param>
-        /// <returns></returns>
+        /// <param name="x">X position to check from.</param>
+        /// <param name="y">Y position to check from.</param>
+        /// <param name="tiles">Array with enough space to contain the returned set.</param>
+        /// <returns>The number of connected tiles found.</returns>
         public int GetConnectedMatching(int x, int y, Tile[] tiles) {
             if (!tileGrid.CheckBounds(x, y))
                 return 0;
@@ -142,8 +202,8 @@ namespace TSwapper {
                 Tile t = tileGrid.GetTile(o.x, o.y);
                 //mark closed
                 tempData[o.x, o.y] = 1;
-                EnqueueNeighbours(o, openSet, t.matchesWith);
-                count++;
+                EnqueueNeighbours(o, openSet, t);
+                tiles[count++] = t;
             }
 
             return count;
