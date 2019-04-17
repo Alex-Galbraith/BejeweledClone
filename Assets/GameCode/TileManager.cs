@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 namespace TSwapper { 
     /// <summary>
@@ -8,7 +7,9 @@ namespace TSwapper {
     public class TileManager : MonoBehaviour
     {
         private TilePool tilePool;
+        private Tile[] tileBuffer;
         public TileGrid tileGrid;
+        public ActionQueue queue;
 
         [Tooltip("How many matching in a row is required for a true match.")]
         public ushort MatchingInARowRequired = 3;
@@ -19,6 +20,49 @@ namespace TSwapper {
             [Range(0,1)]
             public float spawnChance;
         };
+
+
+        private void UpdateTilePos(Tile t) {
+            t.transform.position = tileGrid.GetWorldspaceTilePos(t.GridPos.x, t.GridPos.y).center;
+        }
+
+       
+
+        internal bool TrySwapTiles(Vector2Int a, Vector2Int b) {
+            tileGrid.SwapTiles(a.x, a.y, b.x, b.y);
+            bool valid = false;
+            bool matchA = false;
+            bool matchB = false;
+            valid |= matchA = CheckMatchTile(a.x, a.y);
+            valid |= matchB = CheckMatchTile(b.x, b.y);
+            if (!valid)
+                tileGrid.SwapTiles(a.x, a.y, b.x, b.y);
+            else {
+                queue.Enqueue(delegate (int id) {
+                    UpdateTilePos(tileGrid.GetTile(a.x, a.y));
+                    UpdateTilePos(tileGrid.GetTile(b.x, b.y));
+                    queue.ActionComplete(id);
+                });
+
+                queue.Enqueue(delegate (int id) {
+                    int count;
+                    if (matchA) { 
+                        count = this.GetConnectedMatching(a.x, a.y, tileBuffer);
+                        for (int i = 0; i < count; i++) {
+                            DestroyTileSilent(tileBuffer[i].GridPos.x, tileBuffer[i].GridPos.y);
+                        }
+                    }
+                    if (matchB) { 
+                        count = this.GetConnectedMatching(b.x, b.y, tileBuffer);
+                        for (int i = 0; i < count; i++) {
+                            DestroyTileSilent(tileBuffer[i].GridPos.x, tileBuffer[i].GridPos.y);
+                        }
+                    }
+                    queue.ActionComplete(id);
+                });
+            }
+            return valid;
+        }
 
         /// <summary>
         /// Used for temporary processing jobs such as flood fills.
@@ -53,7 +97,8 @@ namespace TSwapper {
             tilePool    = new TilePool(this.gameObject);
             tempData    = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
             matchData   = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
-        }
+            tileBuffer = new Tile[tileGrid.dimensions.x * tileGrid.dimensions.y/2];
+    }
 
         private void Start() {
             PopulateAll();
@@ -84,7 +129,7 @@ namespace TSwapper {
         public bool CheckMatchTile(int x, int y) {
             int matchCount = 1;
             //check rows
-            for (int i = -MatchingInARowRequired+1; i < MatchingInARowRequired; i++) {
+            for (int i = -MatchingInARowRequired+1; i < MatchingInARowRequired-1; i++) {
                 Tile left   = tileGrid.GetTile(x + i, y);
                 Tile right  = tileGrid.GetTile(x + i + 1, y);
                 if (CheckSimpleMatch(left, right)) {
@@ -97,7 +142,8 @@ namespace TSwapper {
                     return true;
             }
             //check columns
-            for (int i = -MatchingInARowRequired + 1; i < MatchingInARowRequired; i++) {
+            matchCount = 1;
+            for (int i = -MatchingInARowRequired + 1; i < MatchingInARowRequired-1; i++) {
                 Tile bot = tileGrid.GetTile(x , y + i);
                 Tile top = tileGrid.GetTile(x , y + i + 1);
                 if (CheckSimpleMatch(bot, top)) {
@@ -189,7 +235,11 @@ namespace TSwapper {
         private void EnqueueNeighbours(Vector2Int pos, Queue<Vector2Int> queue, Tile other) {
             foreach (var c in Cardinals) {
                 //skip closed tiles
-                if (tempData[pos.x + c.x, pos.y + c.y] != 0)
+                if (tileGrid.CheckBounds(pos.x + c.x, pos.y + c.y)) { 
+                    if (tempData[pos.x + c.x, pos.y + c.y] != 0)
+                        continue;
+                }
+                else
                     continue;
                 Tile t = tileGrid.GetTile(pos.x + c.x, pos.y + c.y);
 

@@ -18,6 +18,16 @@ namespace TSwapper {
         }
 
         /// <summary>
+        /// Gets the grid position of a point in worldspace.
+        /// </summary>
+        public Vector2Int WorldspaceToGridPos(Vector3 wpos) {
+            wpos -= transform.position;
+            wpos.x /= tileSize.x;
+            wpos.y /= tileSize.y;
+            return Vector2Int.FloorToInt(wpos);
+        }
+
+        /// <summary>
         /// Check if the specified positions are inside the valid boundaries.
         /// </summary>
         /// <param name="x">X position</param>
@@ -55,6 +65,37 @@ namespace TSwapper {
             t.InGrid = true;
             t.GridPos = new Vector2Int(x, y);
             return old;
+        }
+
+        /// <summary>
+        /// Swaps two tiles. No effect if one tile is out of bounds.
+        /// </summary>
+        /// <param name="x1">X pos of tile 1</param>
+        /// <param name="y1">Y pos of tile 1</param>
+        /// <param name="x2">X pos of tile 2</param>
+        /// <param name="y2">Y pos of tile 2</param>
+        public void SwapTiles(int x1, int y1, int x2, int y2) {
+            if (!CheckBounds(x1, y1))
+                return;
+            if (!CheckBounds(x2, y2))
+                return;
+
+
+            Tile t = tiles[x1, y1];
+            if (t == null) {
+                Debug.LogWarning("Null tile at " + x1 + " " + y1);
+                return;
+            }
+            if (tiles[x2, y2] == null) {
+                Debug.LogWarning("Null tile at " + x2 + " " + y2);
+                return;
+            }
+
+            tiles[x1, y1] = tiles[x2, y2];
+            tiles[x1, y1].GridPos = new Vector2Int(x1, y1);
+            
+            tiles[x2, y2] = t;
+            t.GridPos = new Vector2Int(x2, y2);
         }
 
         /// <summary>

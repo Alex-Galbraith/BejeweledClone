@@ -205,6 +205,8 @@ GameObject:
   - component: {fileID: 1656179484}
   - component: {fileID: 1656179483}
   - component: {fileID: 1656179485}
+  - component: {fileID: 1656179486}
+  - component: {fileID: 1656179487}
   m_Layer: 0
   m_Name: GemGrid
   m_TagString: Untagged
@@ -253,13 +255,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileGrid: {fileID: 1656179483}
+  queue: {fileID: 1656179487}
   MatchingInARowRequired: 3
   spawnables:
   - t: {fileID: 2807578769767462519, guid: 715898dd485265e42b520f46763347ca, type: 3}
-    spawnChance: 0.24975
+    spawnChance: 0.24974999
   - t: {fileID: 7359669197699061852, guid: bc3f638f075150842a2efa40a5b04cca, type: 3}
-    spawnChance: 0.24975
+    spawnChance: 0.24974999
   - t: {fileID: 4036760992134624519, guid: 479e0f0570463eb4c9a1a51825057b34, type: 3}
-    spawnChance: 0.24975
+    spawnChance: 0.24974999
   - t: {fileID: 3667727909453510786, guid: c578515205296564fb221e724626b8da, type: 3}
-    spawnChance: 0.24975
+    spawnChance: 0.24974999
+--- !u!114 &1656179486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1656179482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b1f1ee517ebc1f4fbd5c0d7d61e6a86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileGrid: {fileID: 1656179483}
+  tileManager: {fileID: 1656179485}
+--- !u!114 &1656179487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1656179482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59a026a8d7a8f6f4a864d41e2ebf7570, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

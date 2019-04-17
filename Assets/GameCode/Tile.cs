@@ -120,6 +120,7 @@ namespace TSwapper {
             if (this.poolGroup != to.poolGroup) {
                 throw new System.ArgumentException("Cannot populate " + to.poolGroup + " from a " + this.poolGroup + ". Poolgroups must match.");
             }
+            to.gameObject.name = gameObject.name;
             //Copy sprite renderer
             to.spriteRenderer.sprite = this.spriteRenderer.sprite;
             to.spriteRenderer.size = this.spriteRenderer.size;
