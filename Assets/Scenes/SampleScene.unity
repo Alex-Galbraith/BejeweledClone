@@ -204,6 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1656179484}
   - component: {fileID: 1656179483}
+  - component: {fileID: 1656179485}
   m_Layer: 0
   m_Name: GemGrid
   m_TagString: Untagged
@@ -224,6 +225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dimensions: {x: 9, y: 9}
+  tileSize: {x: 1, y: 1}
 --- !u!4 &1656179484
 Transform:
   m_ObjectHideFlags: 0
@@ -232,9 +234,31 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1656179482}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -4.5, y: -4.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1656179485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1656179482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6292863dc6920946ae925dc38e4199f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileGrid: {fileID: 1656179483}
+  spawnables:
+  - t: {fileID: 2807578769767462519, guid: 715898dd485265e42b520f46763347ca, type: 3}
+    spawnChance: 0.24612397
+  - t: {fileID: 7359669197699061852, guid: bc3f638f075150842a2efa40a5b04cca, type: 3}
+    spawnChance: 0.2499449
+  - t: {fileID: 4036760992134624519, guid: 479e0f0570463eb4c9a1a51825057b34, type: 3}
+    spawnChance: 0.24908376
+  - t: {fileID: 3667727909453510786, guid: c578515205296564fb221e724626b8da, type: 3}
+    spawnChance: 0.2538474
