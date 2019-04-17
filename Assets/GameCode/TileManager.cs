@@ -21,13 +21,19 @@ namespace TSwapper {
             public float spawnChance;
         };
 
-
+        /// <summary>
+        /// Updates a tile's transform position to match it's grid position.
+        /// </summary>
+        /// <param name="t"></param>
         private void UpdateTilePos(Tile t) {
             t.transform.position = tileGrid.GetWorldspaceTilePos(t.GridPos.x, t.GridPos.y).center;
         }
 
        
-
+        /// <summary>
+        /// Attempt to swap two tiles. Successfull if a match is made. Sets off tile destruction sequences.
+        /// </summary>
+        /// <returns>True if the swap is successful, otherwise false.</returns>
         internal bool TrySwapTiles(Vector2Int a, Vector2Int b) {
             tileGrid.SwapTiles(a.x, a.y, b.x, b.y);
             bool valid = false;

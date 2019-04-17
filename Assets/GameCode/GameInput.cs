@@ -11,8 +11,10 @@ namespace TSwapper {
         bool isPositionSelected = false;
 
         Vector2Int ClickDownPosition;
-        bool isClickDown = false;
 
+        /// <summary>
+        /// Check if we can swap based on distance, then try swap
+        /// </summary>
         private void EvaluateAndSwap(Vector2Int a, Vector2Int b) {
             Vector2Int delta = b - a;
             //are we one manhattan distance away
@@ -30,11 +32,9 @@ namespace TSwapper {
             //we have clicked;
             if (Input.GetButtonDown("Fire1")) {
                 ClickDownPosition = gridPos;
-                isClickDown = true;
             }
             //we have clicked;
             if (Input.GetButtonUp("Fire1")) {
-                isClickDown = false;
                 //we dragged
                 if (ClickDownPosition != gridPos) {
                     EvaluateAndSwap(ClickDownPosition, gridPos);
