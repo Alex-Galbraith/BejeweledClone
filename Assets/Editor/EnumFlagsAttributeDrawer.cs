@@ -1,16 +1,13 @@
-﻿/*
- * 
- * This file contains an editor tool for drawing in editor bitmasks.
- * The code is from: https://answers.unity.com/questions/486694/default-editor-enum-as-flags-.html
- * 
- */
-
+﻿
 using UnityEditor;
 using UnityEngine;
+using System;
 
 [CustomPropertyDrawer(typeof(EnumFlagsAttribute))]
 public class EnumFlagsAttributeDrawer : PropertyDrawer {
     public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label) {
-        _property.intValue = EditorGUI.MaskField(_position, _label, _property.intValue, _property.enumNames);
+        Enum targetEnum = (Enum)Enum.ToObject(fieldInfo.FieldType, _property.intValue);
+        Enum result =  EditorGUI.EnumFlagsField(_position, _label, targetEnum);
+        _property.intValue = (int)Convert.ChangeType(result, targetEnum.GetType());
     }
 }

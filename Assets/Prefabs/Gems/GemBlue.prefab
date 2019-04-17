@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileType: 4
   poolGroup: 0
-  matchesWith: 8
+  matchesWith: 4
   isComplex: 0
   isComplexMatch: 0
   onDeathParticle: {fileID: 0}
