@@ -70,7 +70,8 @@ namespace TSwapper {
 #endif
 
         private void Awake() {
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+                spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         /// <summary>

@@ -256,10 +256,10 @@ MonoBehaviour:
   MatchingInARowRequired: 3
   spawnables:
   - t: {fileID: 2807578769767462519, guid: 715898dd485265e42b520f46763347ca, type: 3}
-    spawnChance: 0.24612397
+    spawnChance: 0.24975
   - t: {fileID: 7359669197699061852, guid: bc3f638f075150842a2efa40a5b04cca, type: 3}
-    spawnChance: 0.2499449
+    spawnChance: 0.24975
   - t: {fileID: 4036760992134624519, guid: 479e0f0570463eb4c9a1a51825057b34, type: 3}
-    spawnChance: 0.24908376
+    spawnChance: 0.24975
   - t: {fileID: 3667727909453510786, guid: c578515205296564fb221e724626b8da, type: 3}
-    spawnChance: 0.2538474
+    spawnChance: 0.24975

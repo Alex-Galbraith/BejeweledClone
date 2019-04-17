@@ -84,7 +84,7 @@ namespace TSwapper {
         public bool CheckMatchTile(int x, int y) {
             int matchCount = 1;
             //check rows
-            for (int i = -MatchingInARowRequired+1; i < MatchingInARowRequired-1; i++) {
+            for (int i = -MatchingInARowRequired+1; i < MatchingInARowRequired; i++) {
                 Tile left   = tileGrid.GetTile(x + i, y);
                 Tile right  = tileGrid.GetTile(x + i + 1, y);
                 if (CheckSimpleMatch(left, right)) {
@@ -93,11 +93,11 @@ namespace TSwapper {
                 else {
                     matchCount = 1;
                 }
+                if (matchCount >= MatchingInARowRequired)
+                    return true;
             }
-            if (matchCount >= MatchingInARowRequired)
-                return true;
             //check columns
-            for (int i = -MatchingInARowRequired + 1; i < MatchingInARowRequired - 1; i++) {
+            for (int i = -MatchingInARowRequired + 1; i < MatchingInARowRequired; i++) {
                 Tile bot = tileGrid.GetTile(x , y + i);
                 Tile top = tileGrid.GetTile(x , y + i + 1);
                 if (CheckSimpleMatch(bot, top)) {
@@ -106,9 +106,10 @@ namespace TSwapper {
                 else {
                     matchCount = 1;
                 }
+                if (matchCount >= MatchingInARowRequired)
+                    return true;
             }
-            if (matchCount >= MatchingInARowRequired)
-                return true;
+            
 
             return false;
         }
@@ -127,6 +128,7 @@ namespace TSwapper {
                 return true;
             if ((b.matchesWith & a.tileType) != 0)
                 return true;
+            
             return false;
         }
 
@@ -152,11 +154,29 @@ namespace TSwapper {
             throw new System.NotImplementedException();
         }
 
+        /// <summary>
+        /// Destroys a tile without triggering any effects.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        private void DestroyTileSilent(int x, int y) {
+            tilePool.ReturnTile(tileGrid.RemoveTile(x, y));
+        }
+
         public void PopulateAll() {
             for (int dx = 0; dx < tileGrid.dimensions.x; dx++) {
                 for (int dy = 0; dy < tileGrid.dimensions.y; dy++) {
                     Tile prefab = spawnables[Random.Range(0, spawnables.Length)].t;
                     SpawnTile(prefab, dx, dy);
+                    //sanity check
+                    int sanity = 0;
+                    while(CheckMatchTile(dx, dy) && sanity++<100) {
+                        DestroyTileSilent(dx, dy);
+                        prefab = spawnables[Random.Range(0, spawnables.Length)].t;
+                        SpawnTile(prefab, dx, dy);
+                    }
+                    if (sanity >= 99)
+                        Debug.LogWarning("Sanity exceded during spawning.");
                 }
             }
         }

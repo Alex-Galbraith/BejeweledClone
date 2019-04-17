@@ -50,6 +50,8 @@ namespace TSwapper {
         /// </summary>
         /// <param name="t">Tile to return.</param>
         public void ReturnTile(Tile t) {
+            if (t == null)
+                return;
             t.gameObject.SetActive(false);
 
 #if SAFE_MODE
