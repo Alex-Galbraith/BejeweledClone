@@ -10,9 +10,11 @@ namespace TSwapper {
         public Vector2 tileSize = new Vector2(1, 1);
 
         private Tile[,] tiles;
+        
 
         void Awake() {
             tiles = new Tile[dimensions.x, dimensions.y];
+            
         }
 
         /// <summary>
@@ -34,6 +36,7 @@ namespace TSwapper {
         public Tile GetTile(int x, int y) {
             return CheckBounds(x,y) ? tiles[x, y] : null;
         }
+        
 
         /// <summary>
         /// Set a tile at the specified position. Returns a tile if the position was already occupied.

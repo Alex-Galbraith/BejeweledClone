@@ -74,10 +74,15 @@ namespace TSwapper {
         }
 
         /// <summary>
-        /// Only called if isComplexMatch is true. Use this function to check if this tile has been flipped.
+        /// Check if this block has a match. Populates the specified array with
+        /// the matching tiles. Array must have space for all matched tiles.
         /// </summary>
-        public bool CheckMatch(TileGrid t) {
-            return false;
+        /// <param name="t">Tilegrid we are checking.</param>
+        /// <param name="array">Array to populate with matched tiles. Must have space for all
+        /// matched tiles. Non allocating.</param>
+        /// <returns>Number of tiles matched</returns>
+        public int CheckMatch(TileGrid t, Tile[] array) {
+            return 0;
         }
 
         /// <summary>
