@@ -253,6 +253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileGrid: {fileID: 1656179483}
+  MatchingInARowRequired: 3
   spawnables:
   - t: {fileID: 2807578769767462519, guid: 715898dd485265e42b520f46763347ca, type: 3}
     spawnChance: 0.24612397
