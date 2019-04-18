@@ -44,6 +44,12 @@ namespace TSwapper {
         [Tooltip("How much is destroying this tile worth?")]
         public int baseScoreValue;
 
+        /// <summary>
+        /// Multiplies the score of all broken tiles by this number.
+        /// </summary>
+        [Tooltip("Multiplies the score of all broken tiles by this number.")]
+        public float scoreMultiplier = 1;
+
         [SerializeField]
         SpriteRenderer spriteRenderer;
 

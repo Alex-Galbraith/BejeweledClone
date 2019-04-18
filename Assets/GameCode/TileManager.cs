@@ -6,21 +6,80 @@ namespace TSwapper {
     /// </summary>
     public class TileManager : MonoBehaviour
     {
-        private TilePool tilePool;
-        private Tile[] tileBuffer;
-        public TileGrid tileGrid;
-        public ActionQueue queue;
 
-        [Tooltip("How many matching in a row is required for a true match.")]
-        public ushort MatchingInARowRequired = 3;
-        
+        #region structs
         [System.Serializable]
         public struct TileSpawnData {
             public Tile t;
-            [Range(0,1)]
+            [Range(0, 1)]
             public float spawnChance;
         };
+        #endregion
 
+        #region public editor
+        public TileGrid tileGrid;
+        public ActionQueue queue;
+        public TileSpawnData[] spawnables;
+        [Tooltip("How many matching in a row is required for a true match.")]
+        public ushort MatchingInARowRequired = 3;
+        #endregion
+
+        #region private data
+        /// <summary>
+        /// Used for temporary processing jobs such as flood fills.
+        /// </summary>
+        private byte[,] tempData;
+
+        private byte[,] matchData;
+
+        private TilePool tilePool;
+
+        private Tile[] tileBuffer;
+
+        private void ClearTemp() {
+            System.Array.Clear(tempData, 0, tempData.Length);
+        }
+
+        private void ClearMatch() {
+            System.Array.Clear(matchData, 0, matchData.Length);
+        }
+        #endregion
+
+        #region events
+        public event OnTilesDestroyed TilesDestroyed;
+        public delegate void OnTilesDestroyed(Tile[] tiles);
+
+        public event OnSuccessfulMove SuccessfulMove;
+        public delegate void OnSuccessfulMove();
+        #endregion
+
+        #region UnityFunctions
+        private void OnValidate() {
+            float sum = 0.001f;
+            for (int i = 0; i < spawnables.Length; i++) {
+                sum += spawnables[i].spawnChance;
+            }
+            for (int i = 0; i < spawnables.Length; i++) {
+                spawnables[i].spawnChance = Mathf.Min(spawnables[i].spawnChance / sum, 1);
+            }
+        }
+
+        
+
+        // Start is called before the first frame update
+        void Awake() {
+            tilePool = new TilePool(this.gameObject);
+            tempData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
+            matchData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
+            tileBuffer = new Tile[tileGrid.dimensions.x * tileGrid.dimensions.y / 2];
+        }
+
+        private void Start() {
+            PopulateAll();
+        }
+        #endregion
+
+        #region Tile manipulations
         /// <summary>
         /// Updates a tile's transform position to match it's grid position.
         /// </summary>
@@ -29,6 +88,10 @@ namespace TSwapper {
             t.transform.position = tileGrid.GetWorldspaceTilePos(t.GridPos.x, t.GridPos.y).center;
         }
 
+        /// <summary>
+        /// Repairs all columns in the grid.
+        /// </summary>
+        /// <param name="ID"></param>
         private void RepairAll(int ID) {
             List<Tile> toUpdate = new List<Tile>();
             for (int i = 0; i < tileGrid.dimensions.x; i++)
@@ -44,8 +107,6 @@ namespace TSwapper {
                 queue.ActionComplete(id);
             });
         }
-
-
         public List<Tile> RepairColumn(int xPos) {
             int top = tileGrid.dimensions.y;
             int botGap = 0;
@@ -115,8 +176,10 @@ namespace TSwapper {
                     DestroyTileSilent(toUpdate[i].GridPos.x, toUpdate[i].GridPos.y);
                 }
                 queue.ActionComplete(id);
+                TilesDestroyed(toUpdate.ToArray());
             });
             queue.Enqueue(RepairAll);
+            
         }
        
         /// <summary>
@@ -133,6 +196,8 @@ namespace TSwapper {
             if (!valid)
                 tileGrid.SwapTiles(a.x, a.y, b.x, b.y);
             else {
+                //invoke event
+                SuccessfulMove?.Invoke();
                 queue.Enqueue(delegate (int id) {
                     UpdateTilePos(tileGrid.GetTile(a.x, a.y));
                     UpdateTilePos(tileGrid.GetTile(b.x, b.y));
@@ -145,46 +210,6 @@ namespace TSwapper {
                 });
             }
             return valid;
-        }
-
-        /// <summary>
-        /// Used for temporary processing jobs such as flood fills.
-        /// </summary>
-        private byte[,] tempData;
-
-        private byte[,] matchData;
-
-        private void ClearTemp() {
-            System.Array.Clear(tempData, 0, tempData.Length);
-        }
-
-        private void ClearMatch() {
-            System.Array.Clear(matchData, 0, matchData.Length);
-        }
-
-        private void OnValidate() {
-            float sum = 0.001f;
-            for (int i = 0; i < spawnables.Length; i++) {
-                sum += spawnables[i].spawnChance;
-            }
-            for (int i = 0; i < spawnables.Length; i++) {
-                spawnables[i].spawnChance = Mathf.Min(spawnables[i].spawnChance/sum,1);
-            }
-        }
-
-        public TileSpawnData[] spawnables;
-
-        // Start is called before the first frame update
-        void Awake()
-        {
-            tilePool    = new TilePool(this.gameObject);
-            tempData    = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
-            matchData   = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
-            tileBuffer = new Tile[tileGrid.dimensions.x * tileGrid.dimensions.y/2];
-    }
-
-        private void Start() {
-            PopulateAll();
         }
 
         /// <summary>
@@ -262,28 +287,6 @@ namespace TSwapper {
         }
 
         /// <summary>
-        /// Check if the row at the specified location contains matches. Populates array
-        /// with ONE tile from each group. 
-        /// </summary>
-        /// <param name="y">Y position</param>
-        /// <param name="array"></param>
-        /// <returns>Number of matching groups found</returns>
-        public int CheckMatchRow(int y, Tile[] array) {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Check if the column at the specified location contains matches. Populates array
-        /// with ONE tile from each group. 
-        /// </summary>
-        /// <param name="x">X position</param>
-        /// <param name="array"></param>
-        /// <returns>Number of matching groups found</returns>
-        public int CheckMatchColumn(int x, Tile[] array) {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
         /// Destroys a tile without triggering any effects.
         /// </summary>
         /// <param name="x"></param>
@@ -315,6 +318,9 @@ namespace TSwapper {
         /// </summary>
         private Vector2Int[] Cardinals = new Vector2Int[] { Vector2Int.right, Vector2Int.up, Vector2Int.left, Vector2Int.down };
 
+        /// <summary>
+        /// Queues all valid neighbours that match using CheckSimpleMatch. Used in <see cref="TileManager.GetConnectedMatching"/>.
+        /// </summary>
         private void EnqueueNeighbours(Vector2Int pos, Queue<Vector2Int> queue, Tile other) {
             foreach (var c in Cardinals) {
                 //skip closed tiles
@@ -365,7 +371,7 @@ namespace TSwapper {
 
             return count;
         }
-
+        #endregion
 
     }
 }
