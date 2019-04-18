@@ -97,6 +97,10 @@ namespace TSwapper {
             for (int i = 0; i < tileGrid.dimensions.x; i++)
                 toUpdate.AddRange(RepairColumn(i));
             queue.ActionComplete(ID);
+
+            if (toUpdate.Count == 0)
+                return;
+
             queue.Enqueue(delegate (int id) {
                 StartCoroutine(TileLerpEffect.LerpPosition(id, queue, toUpdate.ToArray(), 0.3f, tileGrid, TileLerpEffect.SqrLerp));
             });
