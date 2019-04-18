@@ -29,6 +29,95 @@ namespace TSwapper {
             t.transform.position = tileGrid.GetWorldspaceTilePos(t.GridPos.x, t.GridPos.y).center;
         }
 
+        private void RepairAll(int ID) {
+            List<Tile> toUpdate = new List<Tile>();
+            for (int i = 0; i < tileGrid.dimensions.x; i++)
+                toUpdate.AddRange(RepairColumn(i));
+            queue.ActionComplete(ID);
+            queue.Enqueue(delegate (int id) {
+                foreach (Tile t in toUpdate)
+                    UpdateTilePos(t);
+                queue.ActionComplete(id);
+            });
+            queue.Enqueue(delegate (int id) {
+                CheckMatchAndHandle(toUpdate.ToArray());
+                queue.ActionComplete(id);
+            });
+        }
+
+
+        public List<Tile> RepairColumn(int xPos) {
+            int top = tileGrid.dimensions.y;
+            int botGap = 0;
+            int topGap = 0;
+            int botTile, topTile;
+            int gaps = 0;
+            int sanity = 0;
+            List<Tile> toUpdate = new List<Tile>(top);
+            //find bottom of gap
+            while (tileGrid.GetTile(xPos, botGap) != null) {
+                botGap++;
+            }
+            //while we havent reached the top
+            while (botGap<top && sanity++ < top) {
+                topGap = botGap;
+                //find top of gap
+                while (tileGrid.GetTile(xPos, topGap) == null && topGap<top) {
+                    topGap++;
+                    gaps++;
+                }
+                //we have reached the top
+                if (botGap == topGap) {
+                    break;
+                }
+                //find the top of our set of tiles
+                botTile = topGap;
+                topTile = topGap;
+                Tile t;
+                while ((t = tileGrid.GetTile(xPos, topTile)) != null) {
+                    topTile++;
+                }
+                botGap = topTile;
+                if (botTile == topTile)
+                    continue;
+                toUpdate.AddRange(tileGrid.ShiftTiles(xPos, botTile, xPos + 1, topTile, 0, -gaps));
+                
+            }
+            
+
+            return toUpdate;
+        }
+
+        /// <summary>
+        /// Checks for matches on a tile, destroys the matching tiles, and begins the update sequence.
+        /// </summary>
+        /// <param name="tiles">Tiles to check.</param>
+        /// <param name="checkMatch">Set to false if matching is already known for all tiles.</param>
+        public void CheckMatchAndHandle(Tile[] tiles, bool checkMatch = true) {
+            List<Tile> toUpdate = new List<Tile>();
+            ClearTemp();
+            byte MatchCount = 1;
+            for (int i = 0; i < tiles.Length; i++) {
+                Tile t = tiles[i];
+                Vector2Int gpos = t.GridPos;
+                if (checkMatch)
+                    if (!CheckMatchTile(gpos.x, gpos.y))
+                        continue;
+                int c = GetConnectedMatching(gpos.x, gpos.y, tileBuffer, (byte)(MatchCount % 254 + 1), false);
+                if (c > 0)
+                    MatchCount++;
+                //AddRange doesnt have an option to add subarray
+                for (int j = 0; j < c; j++)
+                    toUpdate.Add(tileBuffer[j]);
+            }
+            queue.Enqueue(delegate (int id) {
+                for (int i = 0; i < toUpdate.Count; i++) {
+                    DestroyTileSilent(toUpdate[i].GridPos.x, toUpdate[i].GridPos.y);
+                }
+                queue.ActionComplete(id);
+            });
+            queue.Enqueue(RepairAll);
+        }
        
         /// <summary>
         /// Attempt to swap two tiles. Successfull if a match is made. Sets off tile destruction sequences.
@@ -49,21 +138,9 @@ namespace TSwapper {
                     UpdateTilePos(tileGrid.GetTile(b.x, b.y));
                     queue.ActionComplete(id);
                 });
-
+                //This doubles up on checking, but the code reuse is worth it
                 queue.Enqueue(delegate (int id) {
-                    int count;
-                    if (matchA) { 
-                        count = this.GetConnectedMatching(a.x, a.y, tileBuffer);
-                        for (int i = 0; i < count; i++) {
-                            DestroyTileSilent(tileBuffer[i].GridPos.x, tileBuffer[i].GridPos.y);
-                        }
-                    }
-                    if (matchB) { 
-                        count = this.GetConnectedMatching(b.x, b.y, tileBuffer);
-                        for (int i = 0; i < count; i++) {
-                            DestroyTileSilent(tileBuffer[i].GridPos.x, tileBuffer[i].GridPos.y);
-                        }
-                    }
+                    CheckMatchAndHandle(new Tile[] { tileGrid.GetTile(a.x, a.y), tileGrid.GetTile(b.x, b.y) });
                     queue.ActionComplete(id);
                 });
             }
@@ -265,19 +342,23 @@ namespace TSwapper {
         /// <param name="y">Y position to check from.</param>
         /// <param name="tiles">Array with enough space to contain the returned set.</param>
         /// <returns>The number of connected tiles found.</returns>
-        public int GetConnectedMatching(int x, int y, Tile[] tiles) {
+        public int GetConnectedMatching(int x, int y, Tile[] tiles, byte MatchNum = 1, bool clearTemp = true) {
             if (!tileGrid.CheckBounds(x, y))
                 return 0;
             Queue<Vector2Int> openSet = new Queue<Vector2Int>();
             int count = 0;
             //we will use our tempdata as our closed set
-            ClearTemp();
+            if (clearTemp)
+                ClearTemp();
+            //NOTE: could have unintended consequences
+            if (tempData[x, y] != 0)
+                return 0;
             openSet.Enqueue(new Vector2Int(x, y));
             while (openSet.Count > 0 && count < tiles.Length) {
                 Vector2Int o = openSet.Dequeue();
                 Tile t = tileGrid.GetTile(o.x, o.y);
                 //mark closed
-                tempData[o.x, o.y] = 1;
+                tempData[o.x, o.y] = MatchNum;
                 EnqueueNeighbours(o, openSet, t);
                 tiles[count++] = t;
             }

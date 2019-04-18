@@ -143,14 +143,15 @@ namespace TSwapper {
         /// <param name="safe">Y shift</param>
         /// <returns>List of updated tiles if successful. Null if inputs were out of bounds, or, if safe is enabled, there were occupied tiles in the destination range.</returns>
         public Tile[] ShiftTiles(int fromX, int fromY, int toX, int toY, int shiftX, int shiftY, bool safe = true) {
+
             if (!CheckBounds(fromX, fromY))
                 return null;
-            if (!CheckBounds(toX, toY))
+            if (!CheckBounds(toX-1, toY-1))
                 return null;
 
             if (!CheckBounds(fromX + shiftX, fromY + shiftY))
                 return null;
-            if (!CheckBounds(toX + shiftX, toY + shiftY))
+            if (!CheckBounds(toX + shiftX-1, toY + shiftY-1))
                 return null;
 
             
@@ -163,15 +164,15 @@ namespace TSwapper {
             int sizeX = maxX - minX;
             int sizeY = maxY - minY;
 
-            int incX = (int)Sign(shiftX);
-            int incY = (int)Sign(shiftY);
+            int incX = -(int)Sign(shiftX);
+            int incY = -(int)Sign(shiftY);
 
             //if safe, do occupancy check
             if (safe) { 
                 //This is an inefficient way to go about this, but we are dealing with such a small 
                 //number of items, and this is far more readable
-                for (int i = fromX + shiftX; i < toX + shiftX; i += incX) { 
-                    for (int j = fromY + shiftY; j < toY + shiftY; j += incY) {
+                for (int i = minX + shiftX; i < maxX + shiftX; i += 1) { 
+                    for (int j = minY + shiftY; j < maxY + shiftY; j += 1) {
                         //We only need to check non overlapping regions
                         if (i < toX && i >= fromX && j < toY && j >= fromY)
                             continue;
@@ -189,8 +190,8 @@ namespace TSwapper {
 
             //Shift tiles
             int tcount = 0;
-            for (int i = sizeX; i >=0; i++) {
-                for (int j = sizeY; j >= 0; j++) {
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
                     Vector2Int p = new Vector2Int(startAtX + i * incX + shiftX, startAtY + j * incY + shiftY);
                     tiles[p.x, p.y] = tiles[startAtX + i * incX, startAtY + j * incY];
                     tiles[p.x, p.y].GridPos = p;
