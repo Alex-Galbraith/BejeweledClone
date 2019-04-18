@@ -98,9 +98,7 @@ namespace TSwapper {
                 toUpdate.AddRange(RepairColumn(i));
             queue.ActionComplete(ID);
             queue.Enqueue(delegate (int id) {
-                foreach (Tile t in toUpdate)
-                    UpdateTilePos(t);
-                queue.ActionComplete(id);
+                StartCoroutine(TileLerpEffect.LerpPosition(id, queue, toUpdate.ToArray(), 0.3f, tileGrid, TileLerpEffect.SqrLerp));
             });
             queue.Enqueue(delegate (int id) {
                 CheckMatchAndHandle(toUpdate.ToArray());
@@ -199,9 +197,7 @@ namespace TSwapper {
                 //invoke event
                 SuccessfulMove?.Invoke();
                 queue.Enqueue(delegate (int id) {
-                    UpdateTilePos(tileGrid.GetTile(a.x, a.y));
-                    UpdateTilePos(tileGrid.GetTile(b.x, b.y));
-                    queue.ActionComplete(id);
+                    StartCoroutine(TileLerpEffect.LerpPosition(id, queue, new Tile[] { tileGrid.GetTile(a.x, a.y), tileGrid.GetTile(b.x, b.y) }, 0.2f, tileGrid, TileLerpEffect.EaseInOutLerp));
                 });
                 //This doubles up on checking, but the code reuse is worth it
                 queue.Enqueue(delegate (int id) {

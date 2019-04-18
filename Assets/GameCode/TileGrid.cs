@@ -47,7 +47,6 @@ namespace TSwapper {
             return CheckBounds(x,y) ? tiles[x, y] : null;
         }
         
-
         /// <summary>
         /// Set a tile at the specified position. Returns a tile if the position was already occupied.
         /// This DOES NOT destroy the replaced tile, nor trigger any callbacks. This must be done manually.
@@ -202,7 +201,5 @@ namespace TSwapper {
 
             return rTiles;
         }
-        
-
     }
 }
