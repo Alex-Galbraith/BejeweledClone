@@ -105,7 +105,7 @@ namespace TSwapper {
                 queue.ActionComplete(id);
             });
         }
-        public List<Tile> RepairColumn(int xPos) {
+        public List<Tile> RepairColumn(int xPos, bool spawnNew = true) {
             int top = tileGrid.dimensions.y;
             int botGap = 0;
             int topGap = 0;
@@ -142,7 +142,15 @@ namespace TSwapper {
                 toUpdate.AddRange(tileGrid.ShiftTiles(xPos, botTile, xPos + 1, topTile, 0, -gaps));
                 
             }
-            
+            if (spawnNew) {
+                for (int i = top-1; i >= top-gaps; i--) {
+                    Vector2Int gpos = new Vector2Int(xPos, i);
+                    Tile prefab = spawnables[Random.Range(0, spawnables.Length)].t;
+                    Tile t = SpawnTile(prefab, gpos.x, gpos.y);
+                    t.transform.position = t.transform.position + transform.up * i * tileGrid.tileSize.y;
+                    toUpdate.Add(t);
+                }
+            }
 
             return toUpdate;
         }
