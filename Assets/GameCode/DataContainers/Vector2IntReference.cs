@@ -90,7 +90,7 @@ public class Vector2IntReferenceDrawer : PropertyDrawer {
         //Unity is weird and we have to do this to access properties on ScriptableObjects
         SerializedObject so = new SerializedObject(property.objectReferenceValue);
 
-        var valueProperty = so.FindProperty("Value");
+        var valueProperty = so.FindProperty("_value");
         if (valueProperty == null) {
 
             return;

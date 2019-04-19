@@ -89,7 +89,7 @@ public class Vector2ReferenceDrawer : PropertyDrawer {
         //Unity is weird and we have to do this to access properties on ScriptableObjects
         SerializedObject so = new SerializedObject(property.objectReferenceValue);
         
-        var valueProperty = so.FindProperty("Value");
+        var valueProperty = so.FindProperty("_value");
         if (valueProperty == null) { 
             
             return;
@@ -100,7 +100,7 @@ public class Vector2ReferenceDrawer : PropertyDrawer {
         region = new Rect(position.x + indent, position.y + labelHeight + paddingTop, position.width - 10, position.height - labelHeight - paddingBot);
 
         EditorGUI.BeginChangeCheck();
-        var newValue = EditorGUI.Vector2Field(region, "Value",valueProperty.vector2Value);
+        var newValue = EditorGUI.Vector2Field(region, "Value", valueProperty.vector2Value);
         if (EditorGUI.EndChangeCheck()) {
             valueProperty.vector2Value = newValue;
             //Apply changes to ScriptableObject
