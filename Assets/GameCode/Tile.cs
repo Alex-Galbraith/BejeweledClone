@@ -40,6 +40,12 @@ namespace TSwapper {
         public ParticleSystem onDeathParticle;
 
         /// <summary>
+        /// This sound will be automatically played on death.
+        /// </summary>
+        [Tooltip("This sound will be automatically played on death.")]
+        public AudioClip onDeathSound;
+
+        /// <summary>
         /// How much is destroying this tile worth?
         /// </summary>
         [Tooltip("How much is destroying this tile worth?")]
@@ -112,7 +118,7 @@ namespace TSwapper {
         }
 
         /// <summary>
-        /// This tile has been matched! Spawn the particle effect, animate out, and destroy.
+        /// This tile has been matched! Spawn the particle effect, animate out, and destroy. Only called if isComplex is true.
         /// </summary>
         public void OnMatched() {
 
