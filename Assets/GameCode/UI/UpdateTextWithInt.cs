@@ -12,12 +12,16 @@ namespace TSwapper {
         public string prefix = "";
         public string suffix = "";
 
-        private void Start() {
+        private void Awake() {
             if (toUpdate == null)
                 toUpdate = GetComponent<Text>();
             if (reference != null) {
                 reference.NotifyChange += OnChange;
             }
+        }
+
+        private void OnDestroy() {
+            reference.NotifyChange -= OnChange;
         }
 
         private void OnChange(int before, int after) {
