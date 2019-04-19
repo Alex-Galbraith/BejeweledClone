@@ -10,6 +10,7 @@ namespace TSwapper {
     [RequireComponent(typeof(SpriteRenderer))]
     public class Tile : MonoBehaviour
     {
+        [EnumFlags]
         public TileType tileType;
         public PoolGroup poolGroup;
 
