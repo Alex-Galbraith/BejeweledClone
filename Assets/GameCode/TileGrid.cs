@@ -6,8 +6,9 @@ using static UnityEngine.Mathf;
 namespace TSwapper {
     public class TileGrid : MonoBehaviour {
         [Tooltip("Dimensions of this grid.")]
-        public Vector2Int dimensions = new Vector2Int(9, 9);
-        public Vector2 tileSize = new Vector2(1, 1);
+        public Vector2IntReference dimensions;
+
+        public Vector2Reference tileSize;
 
         private Tile[,] tiles;
         

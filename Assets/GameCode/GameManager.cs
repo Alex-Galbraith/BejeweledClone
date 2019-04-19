@@ -7,23 +7,16 @@ namespace TSwapper {
     public class GameManager : MonoBehaviour
     {
         public TileManager tileManager;
-        public int goalScore;
+        public IntReference goalScore;
         public int startingTurns;
-        
-        private int currentScore;
-        private int currentTurns;
 
-        //For such a simple game I will run the UI from the GameManager. Not the nicest, but it will work fine.
-        #region UI
-        public Text scoreText;
-        public Text turnsText;
-        #endregion
+        public IntReference currentScore;
+        public IntReference currentTurns;
 
         private void OnTurn() {
-            currentTurns--;
-            turnsText.text = "" + currentTurns;
-            if (currentTurns <= 0) {
-                if (currentScore >= goalScore) {
+            currentTurns.Value--;
+            if (currentTurns.Value <= 0) {
+                if (currentScore.Value >= goalScore.Value) {
                     //win
                 }
                 else {
@@ -39,8 +32,7 @@ namespace TSwapper {
                 accum += t.baseScoreValue;
                 mult *= t.scoreMultiplier;
             }
-            currentScore += (int)(accum * mult);
-            scoreText.text = ""+currentScore;
+            currentScore.Value += (int)(accum * mult);
         }
 
         // Start is called before the first frame update
@@ -57,10 +49,8 @@ namespace TSwapper {
         }
 
         private void Setup() {
-            currentScore = 0;
-            currentTurns = startingTurns;
-            scoreText.text = "" + currentScore;
-            turnsText.text = "" + currentTurns;
+            currentScore.Value = 0;
+            currentTurns.Value = startingTurns;
         }
 
         // Update is called once per frame
