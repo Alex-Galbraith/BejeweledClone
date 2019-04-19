@@ -50,7 +50,6 @@ namespace TSwapper {
             }
 
             queue.ActionComplete(ID);
-
         }
     }
 }
