@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 891e89b25b0a5cf43af819a8e210fa33, type: 3}
   m_Name: TileSize
   m_EditorClassIdentifier: 
-  Value: {x: 1, y: 1}
+  _value: {x: 1, y: 1}

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f58564fc68dc4a44ba262b90466ab88, type: 3}
   m_Name: Level1 Grid Size
   m_EditorClassIdentifier: 
-  Value: {x: 9, y: 9}
+  _value: {x: 9, y: 9}

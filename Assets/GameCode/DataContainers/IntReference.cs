@@ -29,8 +29,6 @@ public class IntReference : ScriptableObject
         }
     }
 
-    
-
     public static int operator +(IntReference a, int b) {
         return a.Value + b;
     }
