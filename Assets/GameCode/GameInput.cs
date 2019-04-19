@@ -7,6 +7,8 @@ namespace TSwapper {
         public TileGrid tileGrid;
         public TileManager tileManager;
 
+        public IntReference actionQueueLength;
+
         Vector2Int  SelectedPosition;
         bool isPositionSelected = false;
 
@@ -27,6 +29,8 @@ namespace TSwapper {
 
         // Update is called once per frame
         private void Update() {
+            if (actionQueueLength.Value > 0)
+                return;
             Vector3 mouseWPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2Int gridPos = tileGrid.WorldspaceToGridPos(mouseWPos);
             //we have clicked;

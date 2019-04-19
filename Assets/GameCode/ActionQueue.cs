@@ -9,6 +9,7 @@ namespace TSwapper {
     public class ActionQueue : MonoBehaviour
     {
         private LinkedList<Action> Actions = new LinkedList<Action>();
+        public IntReference queueLengthRef;
         private bool ActionInProgress;
         private Action active;
         int ID = 0;
@@ -35,6 +36,7 @@ namespace TSwapper {
             if (id == ID){ 
                 ActionInProgress = false;
                 active = null;
+                queueLengthRef.Value--;
             }
             else {
                 Debug.LogWarning("Incorrect action ID processed. found: " + id + " Expected: " + ID);
@@ -45,6 +47,7 @@ namespace TSwapper {
         /// </summary>
         public void Enqueue(Action action) {
             Actions.AddLast(action);
+            queueLengthRef.Value++;
         }
 
         /// <summary>
@@ -53,6 +56,7 @@ namespace TSwapper {
         /// <param name="action"></param>
         public void JumpQueue(Action action) {
             Actions.AddFirst(action);
+            queueLengthRef.Value++;
         }
     }
 
