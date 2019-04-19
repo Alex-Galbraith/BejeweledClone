@@ -26,6 +26,11 @@ namespace TSwapper {
 
         #region private data
         /// <summary>
+        /// The sum of tile spawn weights. Set in OnValidate and Awake.
+        /// </summary>
+        private float weightSum;
+
+        /// <summary>
         /// Used for temporary processing jobs such as flood fills.
         /// </summary>
         private byte[,] tempData;
@@ -55,15 +60,15 @@ namespace TSwapper {
 
         #region UnityFunctions
         private void OnValidate() {
-            float sum = 0.001f;
+            CalcWeights();
+        }
+        
+        private void CalcWeights() {
+            weightSum = 0;
             for (int i = 0; i < spawnables.Length; i++) {
-                sum += spawnables[i].spawnChance;
-            }
-            for (int i = 0; i < spawnables.Length; i++) {
-                spawnables[i].spawnChance = Mathf.Min(spawnables[i].spawnChance / sum, 1);
+                weightSum += spawnables[i].spawnChance;
             }
         }
-
         
 
         // Start is called before the first frame update
@@ -72,6 +77,7 @@ namespace TSwapper {
             tempData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
             matchData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
             tileBuffer = new Tile[tileGrid.dimensions.x * tileGrid.dimensions.y / 2];
+            CalcWeights();
         }
 
         private void Start() {
@@ -149,14 +155,28 @@ namespace TSwapper {
             if (spawnNew) {
                 for (int i = top-1; i >= top-gaps; i--) {
                     Vector2Int gpos = new Vector2Int(xPos, i);
-                    Tile prefab = spawnables[Random.Range(0, spawnables.Length)].t;
-                    Tile t = SpawnTile(prefab, gpos.x, gpos.y);
+                    
+                    Tile t = SpawnTile(RandomTilePrefab(), gpos.x, gpos.y);
                     t.transform.position = t.transform.position + transform.up * i * tileGrid.tileSize.y;
                     toUpdate.Add(t);
                 }
             }
 
             return toUpdate;
+        }
+
+        /// <summary>
+        /// Get a random weighted tile
+        /// </summary>
+        /// <returns></returns>
+        private Tile RandomTilePrefab() {
+            float r = Random.value  * weightSum;
+            Tile prefab = null;
+            for (int i = 0; i < spawnables.Length && r>0; i++) {
+                prefab = spawnables[i].t;
+                r -= spawnables[i].spawnChance;
+            }
+            return prefab;
         }
 
         /// <summary>
@@ -306,13 +326,13 @@ namespace TSwapper {
         public void PopulateAll() {
             for (int dx = 0; dx < tileGrid.dimensions.x; dx++) {
                 for (int dy = 0; dy < tileGrid.dimensions.y; dy++) {
-                    Tile prefab = spawnables[Random.Range(0, spawnables.Length)].t;
+                    Tile prefab = RandomTilePrefab();
                     SpawnTile(prefab, dx, dy);
                     //sanity check
                     int sanity = 0;
                     while(CheckMatchTile(dx, dy) && sanity++<100) {
                         DestroyTileSilent(dx, dy);
-                        prefab = spawnables[Random.Range(0, spawnables.Length)].t;
+                        prefab = RandomTilePrefab();
                         SpawnTile(prefab, dx, dy);
                     }
                     if (sanity >= 99)

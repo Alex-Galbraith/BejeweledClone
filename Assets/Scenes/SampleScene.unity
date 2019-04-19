@@ -688,15 +688,17 @@ MonoBehaviour:
   queue: {fileID: 1656179487}
   spawnables:
   - t: {fileID: 2807578769767462519, guid: 715898dd485265e42b520f46763347ca, type: 3}
-    spawnChance: 0.19963588
+    spawnChance: 0.5
   - t: {fileID: 7359669197699061852, guid: bc3f638f075150842a2efa40a5b04cca, type: 3}
-    spawnChance: 0.19963588
+    spawnChance: 0.5
   - t: {fileID: 4036760992134624519, guid: 479e0f0570463eb4c9a1a51825057b34, type: 3}
-    spawnChance: 0.19963588
+    spawnChance: 0.5
   - t: {fileID: 3667727909453510786, guid: c578515205296564fb221e724626b8da, type: 3}
-    spawnChance: 0.19963588
+    spawnChance: 0.504
   - t: {fileID: 1402356874455195091, guid: 872c94d39dfecf5498674da6c1c162a4, type: 3}
-    spawnChance: 0.20045426
+    spawnChance: 0.5
+  - t: {fileID: 7788022313320215621, guid: 4c8ab1a54f2e192448de9e5ca685fe63, type: 3}
+    spawnChance: 0.107
   MatchingInARowRequired: 3
 --- !u!114 &1656179486
 MonoBehaviour:
