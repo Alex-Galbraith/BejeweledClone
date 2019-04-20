@@ -33,6 +33,7 @@ namespace TSwapper {
                 return;
             Vector3 mouseWPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2Int gridPos = tileGrid.WorldspaceToGridPos(mouseWPos);
+
             //we have clicked;
             if (Input.GetButtonDown("Fire1")) {
                 ClickDownPosition = gridPos;

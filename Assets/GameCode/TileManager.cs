@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 namespace TSwapper { 
     /// <summary>
@@ -58,7 +59,7 @@ namespace TSwapper {
         public delegate void OnSuccessfulMove();
         #endregion
 
-        #region UnityFunctions
+        #region Unity Functions
         private void OnValidate() {
             CalcWeights();
         }
@@ -170,7 +171,7 @@ namespace TSwapper {
         /// </summary>
         /// <returns></returns>
         private Tile RandomTilePrefab() {
-            float r = Random.value  * weightSum;
+            float r = UnityEngine.Random.value  * weightSum;
             Tile prefab = null;
             for (int i = 0; i < spawnables.Length && r>0; i++) {
                 prefab = spawnables[i].t;
@@ -272,7 +273,7 @@ namespace TSwapper {
                     matchCount++;
                 }
                 else {
-                    matchCount = 1;
+                    matchCount = 1; 
                 }
                 if (matchCount >= MatchingInARowRequired)
                     return true;
@@ -399,6 +400,47 @@ namespace TSwapper {
 
             return count;
         }
+        #endregion
+
+        #region Potential Match Finding
+        public struct TilePair {
+            public Tile a, b;
+            public override int GetHashCode() {
+                return a.GetHashCode() + b.GetHashCode();
+            }
+        }
+
+        private void CheckSwapAndAdd(int x, int y, int dx, int dy, HashSet<TilePair> ret) {
+            bool matchA, matchB;
+            tileGrid.SwapTiles(x, y, x + dx, y + dy);
+            matchA = CheckMatchTile(x, y);
+            matchB = CheckMatchTile(x + dx, y + dy);
+            if (matchA || matchB) {
+                ret.Add(new TilePair { a = tileGrid.GetTile(x, y), b = tileGrid.GetTile(x + dx, y + dy) });
+            }
+            tileGrid.SwapTiles(x, y, x + dx, y + dy);
+        }
+
+        /// <summary>
+        /// Gets a set of all valid moves. Should be run as a coroutine.
+        /// </summary>
+        public System.Collections.IEnumerator GetFlippablePairs(HashSet<TilePair> ret, System.Action callback) {
+            int x=0;
+            int y=0;
+            for (x = 0; x < tileGrid.dimensions.x-1; x++) {
+                for (y = 0; y < tileGrid.dimensions.y-1; y++) {
+                    CheckSwapAndAdd(x, y, 1, 0, ret);
+                    CheckSwapAndAdd(x, y, 0, 1, ret);
+                    yield return null;
+                }
+                //last tile on y axis
+                CheckSwapAndAdd(x, y+1, 1, 0, ret);
+            }
+            //last tile on x axis
+            CheckSwapAndAdd(x+1, y, 0, 1, ret);
+            callback?.Invoke();
+        }
+        
         #endregion
 
     }
