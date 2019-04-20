@@ -109,15 +109,6 @@ namespace TSwapper {
         }
 
         /// <summary>
-        /// Only called if isComplex is true. Use this function to perform special actions after
-        /// a neighbouring tile has been flipped. We could use events for this, but it would be a little 
-        /// over the top for this project.
-        /// </summary>
-        public void NeighbourFlipped() {
-
-        }
-
-        /// <summary>
         /// This tile has been matched! Spawn the particle effect, animate out, and destroy. Only called if isComplex is true.
         /// </summary>
         public void OnMatched() {
