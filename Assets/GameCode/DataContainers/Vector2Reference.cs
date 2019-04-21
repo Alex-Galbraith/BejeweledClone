@@ -65,12 +65,23 @@ public class Vector2Reference : ScriptableObject
 #if UNITY_EDITOR
 [CustomPropertyDrawer(typeof(Vector2Reference))]
 public class Vector2ReferenceDrawer : PropertyDrawer {
-    private static float extraHeight = 15;
+    private float vecHeight;
     private static float paddingTop = 2;
     private static float paddingBot = 2;
     private static float indent = 10;
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
-        float height = base.GetPropertyHeight(property, label) + extraHeight + paddingBot + paddingTop;
+        if (property.objectReferenceValue == null) {
+            return base.GetPropertyHeight(property, label);
+        }
+        //Unity is weird and we have to do this to access properties on ScriptableObjects
+        SerializedObject so = new SerializedObject(property.objectReferenceValue);
+
+        var valueProperty = so.FindProperty("_value");
+        if (valueProperty == null) {
+            return base.GetPropertyHeight(property, label);
+        }
+        vecHeight = EditorGUI.GetPropertyHeight(valueProperty, label);
+        float height = base.GetPropertyHeight(property, label) + vecHeight + paddingBot + paddingTop;
         return height;
     }
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
@@ -79,7 +90,7 @@ public class Vector2ReferenceDrawer : PropertyDrawer {
         EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive),
                               new GUIContent(label.text));
 
-        var region = new Rect(position.x, position.y, position.width - 10, position.height - (extraHeight + paddingBot + paddingTop));
+        var region = new Rect(position.x, position.y, position.width - 10, position.height - (vecHeight + paddingBot + paddingTop));
         EditorGUI.ObjectField(region, property);
 
         if (property.objectReferenceValue == null) {
