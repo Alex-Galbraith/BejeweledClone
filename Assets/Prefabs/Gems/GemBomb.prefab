@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2142719588539123283}
   - component: {fileID: 7108463315188883847}
-  - component: {fileID: 7788022313320215621}
+  - component: {fileID: 7134033127770368256}
   m_Layer: 0
   m_Name: GemBomb
   m_TagString: Untagged
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 1
   m_SpriteSortPoint: 0
---- !u!114 &7788022313320215621
+--- !u!114 &7134033127770368256
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5150985012052512952}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 545dd4d2566e90a46b6eadf59c8c47a7, type: 3}
+  m_Script: {fileID: 11500000, guid: bbe51ddfc08be9c45826e10a26afdd6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tileType: 0
@@ -102,3 +102,4 @@ MonoBehaviour:
   baseScoreValue: 0
   scoreMultiplier: 1
   spriteRenderer: {fileID: 7108463315188883847}
+  explosionRadius: 1
