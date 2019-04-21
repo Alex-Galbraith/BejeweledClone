@@ -212,6 +212,23 @@ namespace TSwapper {
             queue.Enqueue(RepairAll);
             
         }
+
+        public void DestroyTiles(IEnumerator<Tile> tiles, bool JumpQueue=false) {
+            //Play particle effects and sounds
+
+            //animate out
+
+            //destroy
+            tiles.Reset();
+            while (tiles.MoveNext()) {
+                if (tiles.Current == null)
+                    continue;
+                DestroyTileSilent(tiles.Current.GridPos.x, tiles.Current.GridPos.y);
+                if (tiles.Current.isComplex) {
+                    tiles.Current.OnMatched(this);
+                }
+            }
+        }
        
         /// <summary>
         /// Attempt to swap two tiles. Successfull if a match is made. Sets off tile destruction sequences.
@@ -232,11 +249,21 @@ namespace TSwapper {
                 queue.Enqueue(delegate (int id) {
                     StartCoroutine(TileLerpEffect.LerpPosition(id, queue, new Tile[] { tileGrid.GetTile(a.x, a.y), tileGrid.GetTile(b.x, b.y) }, 0.2f, tileGrid, TileLerpEffect.EaseInOutLerp));
                 });
+                Tile ta = tileGrid.GetTile(a.x, a.y);
+                Tile tb = tileGrid.GetTile(b.x, b.y);
                 //This doubles up on checking, but the code reuse is worth it
                 queue.Enqueue(delegate (int id) {
-                    CheckMatchAndHandle(new Tile[] { tileGrid.GetTile(a.x, a.y), tileGrid.GetTile(b.x, b.y) });
+                    CheckMatchAndHandle(new Tile[] { ta, tb });
+                    if (ta.isComplex && ta.InGrid) {
+                        ta.PostFlip(this);
+                    }
+                    if (tb.isComplex && tb.InGrid) {
+                        tb.PostFlip(this);
+                    }
                     queue.ActionComplete(id);
                 });
+
+                
             }
             return valid;
         }

@@ -95,7 +95,7 @@ namespace TSwapper {
         /// <param name="array">Array to populate with matched tiles. Must have space for all
         /// matched tiles. Non allocating.</param>
         /// <returns>Number of tiles matched</returns>
-        public int CheckMatch(TileGrid t, Tile[] array) {
+        public virtual int CheckMatch(TileManager tm, Tile[] array) {
             return 0;
         }
 
@@ -104,14 +104,14 @@ namespace TSwapper {
         /// this tile has been flipped. We could use events for this, but it would be a little 
         /// over the top for this project.
         /// </summary>
-        public void PostFlip() {
+        public virtual void PostFlip(TileManager tm) {
 
         }
 
         /// <summary>
         /// This tile has been matched! Spawn the particle effect, animate out, and destroy. Only called if isComplex is true.
         /// </summary>
-        public void OnMatched() {
+        public virtual void OnMatched(TileManager tm) {
 
         }
 
@@ -120,11 +120,13 @@ namespace TSwapper {
         /// Used by the TilePool.
         /// </summary>
         /// <param name="to"></param>
-        public void PopulateTile(Tile to) {
+        public virtual void PopulateTile(Tile to) {
             if (this.poolGroup != to.poolGroup) {
                 throw new System.ArgumentException("Cannot populate " + to.poolGroup + " from a " + this.poolGroup + ". Poolgroups must match.");
             }
             to.gameObject.name = gameObject.name;
+            to.transform.rotation = transform.rotation;
+            to.transform.localScale = transform.localScale;
             //Copy sprite renderer
             to.spriteRenderer.sprite = this.spriteRenderer.sprite;
             to.spriteRenderer.size = this.spriteRenderer.size;
