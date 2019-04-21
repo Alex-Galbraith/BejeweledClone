@@ -12,6 +12,7 @@ namespace TSwapper {
 
         public IntReference currentScore;
         public IntReference currentTurns;
+        public IntReference queueLengthRef;
 
         private void OnTurn() {
             currentTurns.Value--;
@@ -62,7 +63,11 @@ namespace TSwapper {
         // Update is called once per frame
         void Update()
         {
-            
+            if (queueLengthRef.Value > 0) {
+                pairsFound = false;
+                StopCoroutine(pairCoroutine);
+                pairingInProgress = false;
+            }
         }
 
 
