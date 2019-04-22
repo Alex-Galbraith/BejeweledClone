@@ -7,6 +7,8 @@ namespace TSwapper {
         public TileGrid tileGrid;
         public TileManager tileManager;
 
+        public GameObject selectionMarker;
+
         public IntReference actionQueueLength;
 
         Vector2Int  SelectedPosition;
@@ -17,13 +19,14 @@ namespace TSwapper {
         /// <summary>
         /// Check if we can swap based on distance, then try swap
         /// </summary>
-        private void EvaluateAndSwap(Vector2Int a, Vector2Int b) {
+        private bool EvaluateAndSwap(Vector2Int a, Vector2Int b) {
             Vector2Int delta = b - a;
             //are we one manhattan distance away
             if (Mathf.Abs(delta.x) + Mathf.Abs(delta.y) == 1) {
                 //swap
-                tileManager.TrySwapTiles(a, b);
+                return tileManager.TrySwapTiles(a, b);
             }
+            return false;
         }
 
 
@@ -33,26 +36,49 @@ namespace TSwapper {
                 return;
             Vector3 mouseWPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2Int gridPos = tileGrid.WorldspaceToGridPos(mouseWPos);
+            bool inBounds = tileGrid.CheckBounds(gridPos.x, gridPos.y);
+            Vector3 wGridPos = tileGrid.GridPosToWorldRect(gridPos.x, gridPos.y).center;
+
+            if (!inBounds && Input.GetButtonUp("Fire1")) {
+                isPositionSelected = false;
+                selectionMarker.SetActive(false);
+                return;
+            }
 
             //we have clicked;
             if (Input.GetButtonDown("Fire1")) {
                 ClickDownPosition = gridPos;
+                if(isPositionSelected == false){ 
+                    selectionMarker.transform.position = wGridPos;
+                    selectionMarker.SetActive(true);
+                }
             }
             //we have clicked;
             if (Input.GetButtonUp("Fire1")) {
                 //we dragged
                 if (ClickDownPosition != gridPos) {
-                    EvaluateAndSwap(ClickDownPosition, gridPos);
+                    if (EvaluateAndSwap(ClickDownPosition, gridPos)) { 
+                        isPositionSelected = false;
+                        selectionMarker.SetActive(false);
+                    }
                 }
                 else {
                     //second click
                     if (isPositionSelected) {
                         isPositionSelected = false;
-                        EvaluateAndSwap(SelectedPosition, gridPos);
+                        selectionMarker.SetActive(false);
+                        if(!EvaluateAndSwap(SelectedPosition, gridPos)) {
+                            SelectedPosition = gridPos;
+                            isPositionSelected = true;
+                            selectionMarker.transform.position = wGridPos;
+                            selectionMarker.SetActive(true);
+                        }
                     }
                     else {
                         SelectedPosition = gridPos;
                         isPositionSelected = true;
+                        selectionMarker.transform.position = wGridPos;
+                        selectionMarker.SetActive(true);
                     }
                 }
             }
