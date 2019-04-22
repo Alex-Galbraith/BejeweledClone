@@ -7,7 +7,11 @@
 		_EffectStrength ("Effect Strength", Float) = 1
 		_EffectMult ("Effect Mult", Float) = 1
 		_EffectScale ("Effect Scale", Float) = 1
-		_EffectPos ("Effect Pos", Float) = 1
+		_EffectMax("Effect Max", Float) = 1
+		_EffectMin("Effect Min", Float) = 1
+		_EffectSpeed("Effect Speed", Float) = 1
+		[Toggle]
+		_EffectToggle("Effect On", Float) = 1
     }
     SubShader
     {
@@ -42,7 +46,7 @@
 
             sampler2D _MainTex, _Ramp;
             float4 _MainTex_ST;
-			fixed _EffectStrength, _EffectPos, _EffectScale, _EffectMult;
+			fixed _EffectStrength, _EffectMax, _EffectMin, _EffectSpeed, _EffectScale, _EffectMult, _EffectToggle;
 
             v2f vert (appdata v)
             {
@@ -59,11 +63,12 @@
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv) * i.color;
+				float _EffectPos = (_Time[0] * _EffectSpeed) % (_EffectMax - _EffectMin) + _EffectMin;
 				float eff = i.vpos.x * 1.414 + i.vpos.y * 1.414 + _EffectPos;
 				fixed4 wcol = tex2D(_Ramp, float2(eff*_EffectScale,0.5));
 
 				fixed4 outC = col;
-				col.rgb = col.rgb + col.rgb * wcol.rgb * wcol.a * _EffectMult + wcol.rgb * wcol.a * _EffectStrength;
+				col.rgb = col.rgb + _EffectToggle*(col.rgb * wcol.rgb * wcol.a * _EffectMult + wcol.rgb * wcol.a * _EffectStrength);
 
 				return col;
             }

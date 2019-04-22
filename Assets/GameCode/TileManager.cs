@@ -97,7 +97,7 @@ namespace TSwapper {
         /// </summary>
         /// <param name="t"></param>
         private void UpdateTilePos(Tile t) {
-            t.transform.position = tileGrid.GetWorldspaceTilePos(t.GridPos.x, t.GridPos.y).center;
+            t.transform.position = tileGrid.GridPosToWorldRect(t.GridPos.x, t.GridPos.y).center;
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace TSwapper {
         public Tile SpawnTile(Tile prefab, int x, int y) {
             Tile t = tilePool.GetTile(prefab);
             tileGrid.SetTile(x, y, t);
-            t.gameObject.transform.position = tileGrid.GetWorldspaceTilePos(x, y).center;
+            t.gameObject.transform.position = tileGrid.GridPosToWorldRect(x, y).center;
             t.gameObject.SetActive(true);
             return t;
         }

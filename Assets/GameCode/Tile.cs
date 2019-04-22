@@ -13,6 +13,7 @@ namespace TSwapper {
         [EnumFlags]
         public TileType tileType;
         public PoolGroup poolGroup;
+        private MaterialPropertyBlock mpb;
 
         /// <summary>
         /// What tiles does this tile match with? If tile A matches with Tile B,
@@ -57,8 +58,8 @@ namespace TSwapper {
         [Tooltip("Multiplies the score of all broken tiles by this number.")]
         public float scoreMultiplier = 1;
 
-        [SerializeField]
-        SpriteRenderer spriteRenderer;
+        
+        public SpriteRenderer spriteRenderer;
 
         /// <summary>
         /// Used for tracking position in TileGrid
@@ -85,6 +86,7 @@ namespace TSwapper {
         private void Awake() {
             if (spriteRenderer == null)
                 spriteRenderer = GetComponent<SpriteRenderer>();
+            mpb = new MaterialPropertyBlock();
         }
 
         /// <summary>
@@ -116,6 +118,16 @@ namespace TSwapper {
         }
 
         /// <summary>
+        /// Used for making the tile gleam.
+        /// </summary>
+        /// <param name="gleam"></param>
+        public void SetGleaming(bool gleam) {
+            spriteRenderer.GetPropertyBlock(mpb);
+            mpb.SetFloat("_EffectToggle", gleam?1:0);
+            spriteRenderer.SetPropertyBlock(mpb);
+        }
+
+        /// <summary>
         /// Populates the specified tile with data from the current tile.
         /// Used by the TilePool.
         /// </summary>
@@ -134,6 +146,8 @@ namespace TSwapper {
             to.spriteRenderer.color = this.spriteRenderer.color;
             to.spriteRenderer.sortingLayerID = this.spriteRenderer.sortingLayerID;
             to.spriteRenderer.sortingOrder = this.spriteRenderer.sortingOrder;
+            to.spriteRenderer.sharedMaterial = this.spriteRenderer.sharedMaterial;
+            to.SetGleaming(false);
             //copy tile data
             to.tileType = this.tileType;
             to.baseScoreValue = this.baseScoreValue;

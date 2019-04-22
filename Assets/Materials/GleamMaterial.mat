@@ -64,10 +64,14 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EffectMax: 50
+    - _EffectMin: -20
     - _EffectMult: 1.45
-    - _EffectPos: -11.05
-    - _EffectScale: 0.08
-    - _EffectStrength: 0.71
+    - _EffectPos: 1.59
+    - _EffectScale: 0.05
+    - _EffectSpeed: 500
+    - _EffectStrength: 0.07
+    - _EffectToggle: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1

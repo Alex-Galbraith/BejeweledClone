@@ -122,7 +122,7 @@ namespace TSwapper {
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
         /// <returns>Rectangle specifying the worlspace rect this tile occupies.</returns>
-        public Rect GetWorldspaceTilePos(int x, int y) {
+        public Rect GridPosToWorldRect(int x, int y) {
             Rect r = new Rect {
                 min = (((Vector2)transform.position) + Vector2.right * x * tileSize.x + Vector2.up * y * tileSize.y),
                 max = (((Vector2)transform.position) + Vector2.right * x * tileSize.x + Vector2.up * y * tileSize.y + tileSize)

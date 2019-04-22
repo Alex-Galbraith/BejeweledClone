@@ -38,7 +38,7 @@ namespace TSwapper {
             float cTime = 0;
             for (int i = 0; i < t.Length; i++) {
                 positionsFrom[i] = t[i].transform.position;
-                positionsTo[i] = tg.GetWorldspaceTilePos(t[i].GridPos.x,t[i].GridPos.y).center;
+                positionsTo[i] = tg.GridPosToWorldRect(t[i].GridPos.x,t[i].GridPos.y).center;
             }
 
             while (cTime < time) {
