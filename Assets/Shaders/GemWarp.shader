@@ -1,4 +1,4 @@
-﻿Shader "Unlit/GemShader"
+﻿Shader "Unlit/GemWarp"
 {
     Properties
     {
