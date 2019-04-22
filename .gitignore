@@ -54,3 +54,4 @@ Unity Recorder/
 Unity Recorder.meta
 #ignore paint.net files
 *.pdn
+*.pdn.meta
