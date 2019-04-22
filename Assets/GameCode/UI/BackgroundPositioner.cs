@@ -21,12 +21,13 @@ namespace TSwapper {
             Vector3 p = BottomLeftAnchor.position + Vector3.right * dimensions.x * tileSize.x * 0.5f + Vector3.up * dimensions.y * tileSize.y * 0.5f;
             p.z = pz;
             transform.position = p;
-            sprite.size = new Vector2(dimensions.x * tileSize.x, dimensions.y * tileSize.y) + (padding);
+            Vector3 mscale = transform.localScale;
+            sprite.size = new Vector2(dimensions.x * tileSize.x / mscale.x, dimensions.y * tileSize.y / mscale.y) + (padding);
             if (mask != null) { 
                 mask.transform.position = p;
                 
                 Vector3 size = mask.bounds.max - mask.bounds.min;
-                Matrix4x4 scale = Matrix4x4.Scale(new Vector3((sprite.size.x - 2 * maskInset.x) / size.x, (sprite.size.y - 2 * maskInset.y) / size.y, 1));
+                Matrix4x4 scale = Matrix4x4.Scale(new Vector3((sprite.size.x - 2 * maskInset.x) / size.x * mscale.x, (sprite.size.y - 2 * maskInset.y) / size.y * mscale.y, 1));
                 mask.transform.localScale = scale * mask.transform.localScale;
             }
 
