@@ -39,6 +39,10 @@ namespace TSwapper {
         private byte[,] matchData;
 
         private TilePool tilePool;
+        private TemplatedPool<TileFacade, Tile> facadePool;
+        public TileFacade facadePrefab;
+
+
 
         private Tile[] tileBuffer;
 
@@ -75,6 +79,7 @@ namespace TSwapper {
         // Start is called before the first frame update
         void Awake() {
             tilePool = new TilePool(this.gameObject);
+            facadePool = new TemplatedPool<TileFacade, Tile>(facadePrefab, Tile.PopulateFacade, tileGrid.transform);
             tempData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
             matchData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
             tileBuffer = new Tile[tileGrid.dimensions.x * tileGrid.dimensions.y / 2];

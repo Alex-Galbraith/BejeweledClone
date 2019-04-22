@@ -142,6 +142,23 @@ namespace TSwapper {
             to.matchesWith = this.matchesWith;
             to.onDeathParticle = this.onDeathParticle;
         }
+
+        /// <summary>
+        /// Populates a tile facade with data from a tile.
+        /// </summary>
+        public static void PopulateFacade(TileFacade to, Tile u) {
+            to.spriteRenderer.sprite = u.spriteRenderer.sprite;
+            to.spriteRenderer.size = u.spriteRenderer.size;
+            to.spriteRenderer.sharedMaterial = u.spriteRenderer.sharedMaterial;
+            to.spriteRenderer.color = u.spriteRenderer.color;
+            to.spriteRenderer.sortingLayerID = u.spriteRenderer.sortingLayerID;
+            to.spriteRenderer.sortingOrder = u.spriteRenderer.sortingOrder;
+
+            to.gameObject.name = "facade_"+u.gameObject.name;
+            to.transform.rotation = u.transform.rotation;
+            to.transform.localScale = u.transform.localScale;
+            to.transform.position = u.transform.position;
+        }
     }
 
    
