@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GemMaterial
-  m_Shader: {fileID: 4800000, guid: 29f09a1accc90fb4a82231abf7726a37, type: 3}
+  m_Name: GleamMaterial
+  m_Shader: {fileID: 4800000, guid: 279afd83cbe9acf429bf26e8613d78db, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -64,7 +64,10 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EffectScale: 0.5
+    - _EffectMult: 1.45
+    - _EffectPos: -11.05
+    - _EffectScale: 0.08
+    - _EffectStrength: 0.71
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
