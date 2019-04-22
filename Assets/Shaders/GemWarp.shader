@@ -10,12 +10,14 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" "Queue" = "Transparent" }
+		Tags{ "RenderType" = "Transparent" "Queue" = "Transparent+50" }
 		Blend SrcAlpha OneMinusSrcAlpha
-        LOD 100
-
+		LOD 100
+		ZWrite Off
+			
         Pass
         {
+			
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -70,5 +72,6 @@
             }
             ENDCG
         }
+
     }
 }

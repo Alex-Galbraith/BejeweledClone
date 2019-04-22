@@ -14,6 +14,50 @@ namespace TSwapper {
         public IntReference currentTurns;
         public IntReference queueLengthRef;
 
+        
+        private TemplatedPool<TileFacade, Tile> facadePool;
+        [Header("Effect settings")]
+        public TileFacade facadePrefab;
+        public Material facadeMaterial;
+        public ParticleSystem absorbSystem;
+        public Transform starTransform;
+        public AnimationCurve starSize;
+        public AnimationCurve wormholeRadius;
+
+        #region effect tweens
+        IEnumerator AnimateStar() {
+            float cTime = 0;
+            while (cTime < 1) {
+                cTime += Time.deltaTime * 2f;
+                starTransform.localScale = Vector3.one * starSize.Evaluate(cTime);
+                yield return null;
+            }
+        }
+
+        IEnumerator AnimateMaterial(List<TileFacade> facades) {
+            facadeMaterial.SetFloat("_WormholeRadius", 0);
+            MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+            facades[0].spriteRenderer.GetPropertyBlock(mpb);
+            foreach (var f in facades) {
+                f.spriteRenderer.SetPropertyBlock(mpb);
+            }
+            float cTime = 0;
+            while (cTime < 1) {
+                cTime += Time.deltaTime * 2f;
+                mpb.SetFloat("_WormholeRadius", wormholeRadius.Evaluate(cTime));
+                foreach (var f in facades) {
+                    f.spriteRenderer.SetPropertyBlock(mpb);
+                }
+                yield return null;
+            }
+            mpb.SetFloat("_WormholeRadius", 100);
+            foreach (var f in facades) {
+                facadePool.ReturnObject(f);
+            }
+            facades.Clear();
+        }
+        #endregion
+
         private void OnTurn() {
             currentTurns.Value--;
 
@@ -31,27 +75,47 @@ namespace TSwapper {
             }
         }
 
-        private void OnTilesBroke(Tile[] tiles) {
+        private void OnTilesBroken(IEnumerator<Tile> tiles) {
             int accum = 0;
             float mult = 1;
-            foreach (Tile t in tiles) {
+            int count = 0;
+            Vector3 center = Vector3.zero;
+            tiles.Reset();
+            //This creates an anourmous amount of work for the garbage collector and I shouldnt be doing it.
+            List<TileFacade> facades = new List<TileFacade>();
+            while(tiles.MoveNext()) {
+                count++;
+                Tile t = tiles.Current;
+                if (t == null)
+                    continue;
                 accum += t.baseScoreValue;
+                
+                center += t.transform.position;
                 mult *= t.scoreMultiplier;
+                var tf = facadePool.GetObject(t);
+                tf.gameObject.SetActive(true);
+                tf.spriteRenderer.sharedMaterial = facadeMaterial;
+                facades.Add(tf);
+                StartCoroutine(AnimateMaterial(facades));
+                StartCoroutine(AnimateStar());
+                absorbSystem.Play();
             }
+            center /= count;
             currentScore.Value += (int)(accum * mult);
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            tileManager.TilesDestroyed += OnTilesBroke;
+            tileManager.TilesDestroyed += OnTilesBroken;
             tileManager.SuccessfulMove += OnTurn;
+            facadePool = new TemplatedPool<TileFacade, Tile>(facadePrefab, Tile.PopulateFacade, transform);
             Setup();
-            StartCoroutine(testing());
+            StartCoroutine(FindPairs());
         }
         //unsub from events
         private void OnDestroy() {
-            tileManager.TilesDestroyed -= OnTilesBroke;
+            tileManager.TilesDestroyed -= OnTilesBroken;
             tileManager.SuccessfulMove -= OnTurn;
         }
 
@@ -90,7 +154,7 @@ namespace TSwapper {
             }
         }
 
-        IEnumerator testing() {
+        IEnumerator FindPairs() {
             //Testing code
             while (true) {
                 if(!pairingInProgress && !pairsFound) {
@@ -101,8 +165,6 @@ namespace TSwapper {
                     pairs.Clear();
                     pairCoroutine = tileManager.GetFlippablePairs(pairs,PairCallback);
                     StartCoroutine(pairCoroutine);
-                }
-                else if (pairsFound){
                 }
                 yield return new WaitForSeconds(1);
             }

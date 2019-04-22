@@ -14,17 +14,22 @@ namespace TSwapper {
             if (dead)
                 return;
             dead = true;
-            Tile[] tileBuffer = new Tile[(explosionRadius * 2 + 1) * (explosionRadius * 2 + 1)];
-            int xPos = GridPos.x;
-            int yPos = GridPos.y;
-            int c = 0;
-            for (int dx = -explosionRadius; dx <= explosionRadius; dx++) {
-                for (int dy = -explosionRadius; dy <= explosionRadius; dy++) {
-                    tileBuffer[c++] = tm.tileGrid.GetTile(xPos + dx, yPos + dy);
+            
+            tm.queue.Enqueue(delegate(int ID) {
+                Tile[] tileBuffer = new Tile[(explosionRadius * 2 + 1) * (explosionRadius * 2 + 1)];
+                int xPos = GridPos.x;
+                int yPos = GridPos.y;
+                int c = 0;
+                for (int dx = -explosionRadius; dx <= explosionRadius; dx++) {
+                    for (int dy = -explosionRadius; dy <= explosionRadius; dy++) {
+                        tileBuffer[c++] = tm.tileGrid.GetTile(xPos + dx, yPos + dy);
+                    }
                 }
-            }
+                tm.DestroyTiles(((IEnumerable<Tile>)tileBuffer).GetEnumerator());
+                tm.queue.ActionComplete(ID);
+            });
 
-            tm.DestroyTiles(((IEnumerable<Tile>)tileBuffer).GetEnumerator());
+        
         }
 
         public override void PopulateTile(Tile to) {

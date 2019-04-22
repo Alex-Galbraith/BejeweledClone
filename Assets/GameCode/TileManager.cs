@@ -39,10 +39,6 @@ namespace TSwapper {
         private byte[,] matchData;
 
         private TilePool tilePool;
-        private TemplatedPool<TileFacade, Tile> facadePool;
-        public TileFacade facadePrefab;
-
-
 
         private Tile[] tileBuffer;
 
@@ -57,7 +53,7 @@ namespace TSwapper {
 
         #region events
         public event OnTilesDestroyed TilesDestroyed;
-        public delegate void OnTilesDestroyed(Tile[] tiles);
+        public delegate void OnTilesDestroyed(IEnumerator<Tile> tiles);
 
         public event OnSuccessfulMove SuccessfulMove;
         public delegate void OnSuccessfulMove();
@@ -79,7 +75,7 @@ namespace TSwapper {
         // Start is called before the first frame update
         void Awake() {
             tilePool = new TilePool(this.gameObject);
-            facadePool = new TemplatedPool<TileFacade, Tile>(facadePrefab, Tile.PopulateFacade, tileGrid.transform);
+            
             tempData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
             matchData = new byte[tileGrid.dimensions.x, tileGrid.dimensions.y];
             tileBuffer = new Tile[tileGrid.dimensions.x * tileGrid.dimensions.y / 2];
@@ -212,18 +208,13 @@ namespace TSwapper {
                     DestroyTileSilent(toUpdate[i].GridPos.x, toUpdate[i].GridPos.y);
                 }
                 queue.ActionComplete(id);
-                TilesDestroyed(toUpdate.ToArray());
+                TilesDestroyed(toUpdate.GetEnumerator());
             });
             queue.Enqueue(RepairAll);
             
         }
 
         public void DestroyTiles(IEnumerator<Tile> tiles, bool JumpQueue=false) {
-            //Play particle effects and sounds
-
-            //animate out
-
-            //destroy
             tiles.Reset();
             while (tiles.MoveNext()) {
                 if (tiles.Current == null)
@@ -233,6 +224,7 @@ namespace TSwapper {
                     tiles.Current.OnMatched(this);
                 }
             }
+            TilesDestroyed(tiles);
         }
        
         /// <summary>
