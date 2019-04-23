@@ -44,7 +44,7 @@ namespace TSwapper {
             }
 
             //check boundaries
-            if (!inBounds && Input.GetButtonUp("Fire1")) {
+            if (!inBounds && (Input.GetButton("Fire1")|| Input.GetButtonUp("Fire1"))) {
                 isPositionSelected = false;
                 selectionMarker.SetActive(false);
                 return;
