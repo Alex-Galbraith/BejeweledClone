@@ -39,6 +39,11 @@ namespace TSwapper {
             bool inBounds = tileGrid.CheckBounds(gridPos.x, gridPos.y);
             Vector3 wGridPos = tileGrid.GridPosToWorldRect(gridPos.x, gridPos.y).center;
 
+            if (Input.GetButtonUp("Fire2")) {
+                StartCoroutine(tileManager.ShuffleTiles());
+            }
+
+            //check boundaries
             if (!inBounds && Input.GetButtonUp("Fire1")) {
                 isPositionSelected = false;
                 selectionMarker.SetActive(false);

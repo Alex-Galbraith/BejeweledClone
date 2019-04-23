@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+
 namespace TSwapper { 
     /// <summary>
     /// Contains basic tile spawning, shifting, and matching rules.
@@ -423,6 +423,45 @@ namespace TSwapper {
             }
 
             return count;
+        }
+
+        /// <summary>
+        /// Shuffles all tiles into a new position updates the visuals.
+        /// </summary>
+        public System.Collections.IEnumerator ShuffleTiles() {
+            //Fisher–Yates shuffle
+            Tile[] update = new Tile[tileGrid.dimensions.x * tileGrid.dimensions.y];
+            int c = 0;
+            for (int x = 0; x < tileGrid.dimensions.x; x++) {
+                for (int y = 0; y < tileGrid.dimensions.y; y++) {
+                    update[c++] = tileGrid.GetTile(x, y); 
+                }
+            }
+            for (int x = 0; x < tileGrid.dimensions.x; x++) {
+                for (int y = 0; y < tileGrid.dimensions.y; y++) {
+                    int sanity = 0;
+                    do {
+                        int m = Random.Range(0, x + 1);
+                        int n = Random.Range(0, y + 1);
+
+                        //swap
+                        Tile temp = tileGrid.GetTile(x, y);
+                        tileGrid.SetTile(x, y, tileGrid.GetTile(m, n));
+                        tileGrid.SetTile(m, n, temp);
+                        if (!CheckMatchTile(m, n) && !CheckMatchTile(x, y))
+                            break;
+                        temp = tileGrid.GetTile(x, y);
+                        tileGrid.SetTile(x, y, tileGrid.GetTile(m, n));
+                        tileGrid.SetTile(m, n, temp);
+                    } while (sanity++ < 20);
+                    if (sanity >= 19)
+                        Debug.LogWarning("Sanity Exceded during shuffle");
+                }
+                yield return null;
+            }
+            queue.Enqueue(delegate (int id) {
+                StartCoroutine(TileLerpEffect.LerpPosition(id, queue, update, 0.5f, tileGrid, TileLerpEffect.EaseInOutLerp));
+            });
         }
         #endregion
 

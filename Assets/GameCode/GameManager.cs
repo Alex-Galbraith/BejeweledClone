@@ -140,11 +140,14 @@ namespace TSwapper {
         private bool pairsFound;
         private bool pairingInProgress;
         private void PairCallback() {
+            if (pairingInProgress == false)
+                return;
             pairingInProgress = false;
             pairsFound = true;
 
             if (pairs.Count == 0) {
-                //we are in trouble
+                //We didnt find any pairs, shuffle
+                StartCoroutine(tileManager.ShuffleTiles());
             }
             else {
                 foreach (var pair in pairs) {
@@ -157,7 +160,10 @@ namespace TSwapper {
         IEnumerator FindPairs() {
             //Testing code
             while (true) {
+                if (queueLengthRef.Value > 0)
+                    yield return null;
                 if(!pairingInProgress && !pairsFound) {
+                    pairingInProgress = true;
                     foreach (var pair in pairs) {
                         pair.a.SetGleaming(false);
                         pair.b.SetGleaming(false);
