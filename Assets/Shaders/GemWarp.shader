@@ -50,8 +50,8 @@
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-				float d = (length(o.vertex.xyz - _WormholePos) - _WormholeRadius)/ _EffectScale;
-				o.vertex.xyz = lerp(_WormholePos, o.vertex.xyz, saturate(d));
+				float d = (length(o.vertex.xy - _WormholePos.xy) - _WormholeRadius)/ _EffectScale;
+				o.vertex.xy = lerp(_WormholePos.xy, o.vertex.xy, saturate(d));
 				o.wormEffect = 1 - saturate(d);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				//transfer vertex color

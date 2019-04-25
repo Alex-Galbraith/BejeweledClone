@@ -10,6 +10,7 @@ namespace TSwapper {
         public GameObject selectionMarker;
 
         public IntReference actionQueueLength;
+        public SetPaused pauseRef;
 
         Vector2Int  SelectedPosition;
         bool isPositionSelected = false;
@@ -32,7 +33,7 @@ namespace TSwapper {
 
         // Update is called once per frame
         private void Update() {
-            if (actionQueueLength.Value > 0)
+            if (actionQueueLength.Value > 0 || pauseRef.IsPaused)
                 return;
             Vector3 mouseWPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2Int gridPos = tileGrid.WorldspaceToGridPos(mouseWPos);

@@ -13,6 +13,7 @@ namespace TSwapper {
         public IntReference currentScore;
         public IntReference currentTurns;
         public IntReference queueLengthRef;
+        public SetPaused pauseRef;
 
         
         private TemplatedPool<TileFacade, Tile> facadePool;
@@ -20,9 +21,13 @@ namespace TSwapper {
         public TileFacade facadePrefab;
         public Material facadeMaterial;
         public ParticleSystem absorbSystem;
-        public Transform starTransform;
+        public RectTransform starTransform;
         public AnimationCurve starSize;
         public AnimationCurve wormholeRadius;
+        [Header("UI settings")]
+        public GameObject EnableOnComplete;
+        public GameObject EnableOnWin;
+        public GameObject EnableOnLose;
 
         #region effect tweens
         IEnumerator AnimateStar() {
@@ -36,6 +41,7 @@ namespace TSwapper {
 
         IEnumerator AnimateMaterial(List<TileFacade> facades) {
             facadeMaterial.SetFloat("_WormholeRadius", 0);
+            facadeMaterial.SetVector("_WormholePos", Camera.main.WorldToViewportPoint(starTransform.position)*2-Vector3.one);
             MaterialPropertyBlock mpb = new MaterialPropertyBlock();
             facades[0].spriteRenderer.GetPropertyBlock(mpb);
             foreach (var f in facades) {
@@ -65,14 +71,7 @@ namespace TSwapper {
             StopCoroutine(pairCoroutine);
             pairingInProgress = false;
 
-            if (currentTurns.Value <= 0) {
-                if (currentScore.Value >= goalScore.Value) {
-                    //win
-                }
-                else {
-                    //lose
-                }
-            }
+            
         }
 
         private void OnTilesBroken(IEnumerator<Tile> tiles) {
@@ -122,6 +121,7 @@ namespace TSwapper {
         private void Setup() {
             currentScore.Value = 0;
             currentTurns.Value = startingTurns;
+            pauseRef.UnPause();
         }
 
         // Update is called once per frame
@@ -132,8 +132,29 @@ namespace TSwapper {
                 StopCoroutine(pairCoroutine);
                 pairingInProgress = false;
             }
+            else {
+                if (currentTurns.Value <= 0) {
+                    //prevent actions
+                    queueLengthRef.Value += 1;
+                    Invoke("LateEndGame",1f);
+                }
+            }
         }
 
+        private void LateEndGame() {
+            queueLengthRef.Value -= 1;
+            pauseRef.Pause();
+            EnableOnComplete.SetActive(true);
+            if (currentScore.Value >= goalScore.Value) {
+                EnableOnWin.SetActive(true);
+            }
+            else {
+                EnableOnLose.SetActive(true);
+            }
+            //trigger update
+            currentScore.Value = currentScore.Value;
+            
+        }
 
         private HashSet<TileManager.TilePair> pairs = new HashSet<TileManager.TilePair>();
         IEnumerator pairCoroutine;

@@ -9,6 +9,9 @@ namespace TSwapper {
         public Text toUpdate;
         public string divider = " / ";
 
+        public float tweenTime = 0.5f;
+        private int lastVal;
+
         private void Awake() {
             if (toUpdate == null)
                 toUpdate = GetComponent<Text>();
@@ -22,13 +25,14 @@ namespace TSwapper {
         }
 
         private void OnScoreChange(int before, int after) {
-            StartCoroutine(TweenScore(0.5f, before, after));
+            StartCoroutine(TweenScore(tweenTime, lastVal, after));
+            lastVal = after;
         }
 
         private IEnumerator TweenScore(float time, int before, int after) {
             float cTime = 0;
             while (cTime < time) {
-                cTime += Time.deltaTime;
+                cTime += Time.unscaledDeltaTime;
                 toUpdate.text = Mathf.CeilToInt(Mathf.Lerp(before,after,cTime/time)) + divider + maxScoreRef.Value;
                 yield return null;
             }
