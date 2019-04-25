@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace TSwapper { 
+
+namespace TSwapper.UI { 
     public class ScoreBar : MonoBehaviour
     {
         public RectTransform front;

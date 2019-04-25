@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TSwapper { 
+namespace TSwapper.UI { 
     [ExecuteInEditMode, RequireComponent(typeof(Text))]
     public class UpdateTextWithInt : MonoBehaviour
     {

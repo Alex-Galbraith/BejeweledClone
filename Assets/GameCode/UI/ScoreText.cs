@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TSwapper {
+namespace TSwapper.UI {
     [ExecuteInEditMode, RequireComponent(typeof(Text))]
     public class ScoreText : MonoBehaviour {
         public IntReference scoreRef, maxScoreRef;

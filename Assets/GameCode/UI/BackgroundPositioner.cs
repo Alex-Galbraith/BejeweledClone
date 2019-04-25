@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace TSwapper {
+
+
+namespace TSwapper.UI {
     [RequireComponent(typeof(SpriteRenderer)), ExecuteInEditMode]
     public class BackgroundPositioner : MonoBehaviour {
         public SpriteRenderer sprite;
