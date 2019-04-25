@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace TSwapper.UI {
+    /// <summary>
+    /// Script based scene loading with fade transition.
+    /// </summary>
     public class LoadScene : MonoBehaviour {
         public int sceneID;
         public Image fade;
@@ -14,7 +17,9 @@ namespace TSwapper.UI {
                 Time.timeScale = 0;
             StartCoroutine(Transition());
         }
-
+        /// <summary>
+        /// Fades then loads scene.
+        /// </summary>
         public IEnumerator Transition() {
             float cTime = 0;
             while (cTime < transitionTime) {

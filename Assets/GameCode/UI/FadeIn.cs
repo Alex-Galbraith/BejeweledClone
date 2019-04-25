@@ -2,23 +2,21 @@
 using UnityEngine;
 using UnityEngine.UI;
 namespace TSwapper.UI {
+    /// <summary>
+    /// Fades an image in or out.
+    /// </summary>
     public class FadeIn : MonoBehaviour {
         public Image fade;
         public float transitionTime;
-        public bool freezeTime = false;
         public bool playOnStart = true;
         public Color from, to;
         public void Start() {
             if (!playOnStart)
                 return;
-            if (freezeTime)
-                Time.timeScale = 0;
             StartCoroutine(Transition());
         }
 
         public void Activate() {
-            if (freezeTime)
-                Time.timeScale = 0;
             StartCoroutine(Transition());
         }
 
@@ -29,8 +27,6 @@ namespace TSwapper.UI {
                 fade.color = Color.Lerp(from, to, cTime / transitionTime);
                 yield return null;
             }
-            if (freezeTime)
-                Time.timeScale = 1;
         }
     }
 }

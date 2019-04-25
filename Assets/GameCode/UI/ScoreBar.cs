@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace TSwapper.UI { 
+    /// <summary>
+    /// Score bar display with smoothly updating bare length effect.
+    /// </summary>
     public class ScoreBar : MonoBehaviour
     {
         public RectTransform front;
@@ -13,11 +16,17 @@ namespace TSwapper.UI {
         public float tweenTime = 0.5f;
         private int lastVal = 0;
 
+        /// <summary>
+        /// Score change callback
+        /// </summary>
         private void OnChange(int before, int after) {
             StartCoroutine(TweenScore(tweenTime, lastVal, after));
             lastVal = after;
         }
 
+        /// <summary>
+        /// Smoothly update the score bar between two values.
+        /// </summary>
         private IEnumerator TweenScore(float time, int before, int after) {
             float cTime = 0;
             while (cTime < time) {
@@ -28,22 +37,19 @@ namespace TSwapper.UI {
             }
 
         }
-
-        private void OnChangeMax(int before, int after) {
-        }
-
+        /// <summary>
+        /// Register callbacks on creation.
+        /// </summary>
         private void Awake() {
             if (scoreRef != null) {
                 scoreRef.NotifyChange += OnChange;
             }
-            if (maxScoreRef != null) {
-                maxScoreRef.NotifyChange += OnChangeMax;
-            }
         }
-
+        /// <summary>
+        /// Deregister callback when destroyed
+        /// </summary>
         private void OnDestroy() {
             scoreRef.NotifyChange -= OnChange;
-            maxScoreRef.NotifyChange -= OnChangeMax;
         }
     }
 }

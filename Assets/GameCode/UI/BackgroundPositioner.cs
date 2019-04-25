@@ -4,6 +4,9 @@ using UnityEngine;
 
 
 namespace TSwapper.UI {
+    /// <summary>
+    /// Positions the background of the play area.
+    /// </summary>
     [RequireComponent(typeof(SpriteRenderer)), ExecuteInEditMode]
     public class BackgroundPositioner : MonoBehaviour {
         public SpriteRenderer sprite;
@@ -35,19 +38,16 @@ namespace TSwapper.UI {
 
         }
 
+        /// <summary>
+        /// Get the sprite renderer
+        /// </summary>
         private void Awake() {
             if (sprite == null)
                 sprite = GetComponent<SpriteRenderer>();
         }
 
-        // Start is called before the first frame update
         void Start() {
             UpdateSizeAndPosition();
-        }
-
-        // Update is called once per frame
-        void Update() {
-
         }
     }
 }
