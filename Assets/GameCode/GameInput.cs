@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace TSwapper {
+    /// <summary>
+    /// Handles user input.
+    /// </summary>
     public class GameInput : MonoBehaviour {
         public TileGrid tileGrid;
         public TileManager tileManager;
@@ -16,13 +19,12 @@ namespace TSwapper {
         public AudioSource SwapSound;
         public AudioSource NoSwapSound;
 
-        Vector2Int  SelectedPosition;
-        bool isPositionSelected = false;
-
-        Vector2Int ClickDownPosition;
+        private Vector2Int  SelectedPosition;
+        private bool isPositionSelected = false;
+        private Vector2Int ClickDownPosition;
 
         /// <summary>
-        /// Check if we can swap based on distance, then try swap
+        /// Check if we can swap based on distance, then try swap.
         /// </summary>
         private bool EvaluateAndSwap(Vector2Int a, Vector2Int b) {
             Vector2Int delta = b - a;
@@ -40,7 +42,9 @@ namespace TSwapper {
         }
 
 
-        // Update is called once per frame
+        /// <summary>
+        /// Checks for user inputs and reacts accordingly.
+        /// </summary>
         private void Update() {
             if (actionQueueLength.Value > 0 || pauseRef.IsPaused)
                 return;
@@ -49,6 +53,7 @@ namespace TSwapper {
             bool inBounds = tileGrid.CheckBounds(gridPos.x, gridPos.y);
             Vector3 wGridPos = tileGrid.GridPosToWorldRect(gridPos.x, gridPos.y).center;
 
+            //Right clicking will shuffle tiles for this demo.
             if (Input.GetButtonUp("Fire2")) {
                 StartCoroutine(tileManager.ShuffleTiles());
             }
@@ -89,6 +94,7 @@ namespace TSwapper {
                             selectionMarker.SetActive(true);
                         }
                     }
+                    //first click
                     else {
                         SelectedPosition = gridPos;
                         isPositionSelected = true;
