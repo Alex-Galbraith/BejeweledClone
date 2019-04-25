@@ -5,12 +5,11 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-/**
- * This class allows us to create a scriptable object that allows us to drag and drop a Vector2Int to many objects.
- * This technique is explained here: https://www.youtube.com/watch?v=raQ3iHhE_Kk
- */
-
-
+/// <summary>
+/// <para>This class allows us to create a scriptable object that allows us to drag and drop a Vector2Int as a reference.</para>
+/// <para>There is also a NotifyChange event that can be subscribed to which is called when the value is modified.</para>
+/// This technique is explained here: https://www.youtube.com/watch?v=raQ3iHhE_Kk
+/// </summary>
 [CreateAssetMenu(fileName ="Vector2IntReference", menuName ="Data Containers/Create Vector2Int Ref")]
 public class Vector2IntReference : ScriptableObject
 {
