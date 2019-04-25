@@ -25,7 +25,7 @@ namespace TSwapper {
                         tileBuffer[c++] = tm.tileGrid.GetTile(xPos + dx, yPos + dy);
                     }
                 }
-                tm.DestroyTiles(((IEnumerable<Tile>)tileBuffer).GetEnumerator());
+                tm.DestroyTiles(((IEnumerable<Tile>)tileBuffer).GetEnumerator(), true);
                 tm.queue.ActionComplete(ID);
             });
 
