@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TSwapper.UI {
+namespace TSwapper {
     [CreateAssetMenu(menuName = "Pause Asset")]
     public class SetPaused : ScriptableObject {
         private float originalScale = 1;
