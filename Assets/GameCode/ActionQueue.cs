@@ -42,7 +42,7 @@ namespace TSwapper {
                 queueLengthRef.Value--;
             }
             else {
-                Debug.LogWarning("Incorrect action ID processed. found: " + id + " Expected: " + ID);
+                Debug.LogError("Incorrect action ID processed. found: " + id + " Expected: " + ID);
             }
         }
         /// <summary>
@@ -63,6 +63,10 @@ namespace TSwapper {
         }
     }
 
+    /// <summary>
+    /// Delegate for queueable Actions. Delegates must call <see cref="ActionQueue.ActionComplete(int)"/> when finished, or they will halt the queue.
+    /// </summary>
+    /// <param name="ID">ID to call <see cref="ActionQueue.ActionComplete(int)"/>.</param>
     public delegate void Action(int ID);
 
 }
