@@ -21,8 +21,7 @@ namespace TSwapper {
         public TileGrid tileGrid;
         public ActionQueue queue;
         public TileSpawnData[] spawnables;
-        [Tooltip("How many matching in a row is required for a true match.")]
-        public ushort MatchingInARowRequired = 3;
+        private ushort MatchingInARowRequired = 3;
         #endregion
 
         #region private data
@@ -203,14 +202,17 @@ namespace TSwapper {
                 for (int j = 0; j < c; j++)
                     toUpdate.Add(tileBuffer[j]);
             }
-            queue.Enqueue(delegate (int id) {
-                for (int i = 0; i < toUpdate.Count; i++) {
-                    DestroyTileSilent(toUpdate[i].GridPos.x, toUpdate[i].GridPos.y);
-                }
-                queue.ActionComplete(id);
-                TilesDestroyed(toUpdate.GetEnumerator());
-            });
+            if (toUpdate.Count > 0) {
+                queue.Enqueue(delegate (int id) {
+                    for (int i = 0; i < toUpdate.Count; i++) {
+                        DestroyTileSilent(toUpdate[i].GridPos.x, toUpdate[i].GridPos.y);
+                    }
+                    queue.ActionComplete(id);
+                    TilesDestroyed(toUpdate.GetEnumerator());
+                });
+            }
             queue.Enqueue(RepairAll);
+            
             
         }
 

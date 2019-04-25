@@ -12,6 +12,10 @@ namespace TSwapper {
         public IntReference actionQueueLength;
         public SetPaused pauseRef;
 
+        [Header("SFX")]
+        public AudioSource SwapSound;
+        public AudioSource NoSwapSound;
+
         Vector2Int  SelectedPosition;
         bool isPositionSelected = false;
 
@@ -25,8 +29,13 @@ namespace TSwapper {
             //are we one manhattan distance away
             if (Mathf.Abs(delta.x) + Mathf.Abs(delta.y) == 1) {
                 //swap
-                return tileManager.TrySwapTiles(a, b);
+                if (tileManager.TrySwapTiles(a, b)) {
+                    SwapSound?.Play();
+                    return true;
+                }
+                NoSwapSound?.Play();
             }
+            
             return false;
         }
 

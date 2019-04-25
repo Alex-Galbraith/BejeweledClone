@@ -28,6 +28,10 @@ namespace TSwapper {
         public GameObject EnableOnComplete;
         public GameObject EnableOnWin;
         public GameObject EnableOnLose;
+        [Header("SFX")]
+        public AudioSource DestroyedEffect;
+        private float basePitch;
+        public AudioSource ScoreCompleteEffect;
 
         #region effect tweens
         IEnumerator AnimateStar() {
@@ -64,9 +68,11 @@ namespace TSwapper {
         }
         #endregion
 
+        private int breaksThisTurn = 0;
+
         private void OnTurn() {
             currentTurns.Value--;
-
+            breaksThisTurn = 1;
             pairsFound = false;
             StopCoroutine(pairCoroutine);
             pairingInProgress = false;
@@ -80,6 +86,11 @@ namespace TSwapper {
             int count = 0;
             Vector3 center = Vector3.zero;
             tiles.Reset();
+            Debug.Log("Played");
+            breaksThisTurn++;
+            DestroyedEffect.pitch = basePitch * Mathf.Pow(1.1f, breaksThisTurn-1);
+            DestroyedEffect.Play();
+            
             //This creates an anourmous amount of work for the garbage collector and I shouldnt be doing it.
             List<TileFacade> facades = new List<TileFacade>();
             while(tiles.MoveNext()) {
@@ -100,7 +111,12 @@ namespace TSwapper {
                 absorbSystem.Play();
             }
             center /= count;
+            //play sound effect when goal reached
+            if (currentScore.Value + (int)(accum * mult) >= goalScore.Value && currentScore.Value < goalScore.Value) {
+                ScoreCompleteEffect.Play();
+            }
             currentScore.Value += (int)(accum * mult);
+            
         }
 
         // Start is called before the first frame update
@@ -111,6 +127,7 @@ namespace TSwapper {
             facadePool = new TemplatedPool<TileFacade, Tile>(facadePrefab, Tile.PopulateFacade, transform);
             Setup();
             StartCoroutine(FindPairs());
+            basePitch = DestroyedEffect.pitch;
         }
         //unsub from events
         private void OnDestroy() {
