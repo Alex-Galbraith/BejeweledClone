@@ -23,19 +23,19 @@ namespace TSwapper {
         [EnumFlags]
         public TileType matchesWith;
         /// <summary>
-        /// Is this a basic matching tile, or do we need to treat it with
+        /// Is this a basic tile, or do we need to treat it with
         /// greater care. E.G., do we need to call PostFlip
         /// </summary>
         public bool isComplex = false;
 
         /// <summary>
-        /// This particle will be automatically triggered on death.
+        /// This particle will be automatically triggered on death. Only plays if isComplex.
         /// </summary>
         [Tooltip("This particle will be automatically triggered on death.")]
         public VFXType onDeathParticle;
 
         /// <summary>
-        /// This sound will be automatically played on death.
+        /// This sound will be automatically played on death. Only plays if isComplex.
         /// </summary>
         [Tooltip("This sound will be automatically played on death.")]
         public AudioPool.SFXType onDeathSound;
@@ -72,8 +72,10 @@ namespace TSwapper {
         }
 
 #if UNITY_EDITOR
+        //Auto hook up spriteRenderer
         private void OnValidate() {
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+                spriteRenderer = GetComponent<SpriteRenderer>();
         }
 #endif
 

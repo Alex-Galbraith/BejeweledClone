@@ -54,7 +54,7 @@ namespace TSwapper {
         }
 
         /// <summary>
-        /// Add am action to the start of the queue.
+        /// Add an action to the start of the queue.
         /// </summary>
         /// <param name="action"></param>
         public void JumpQueue(Action action) {

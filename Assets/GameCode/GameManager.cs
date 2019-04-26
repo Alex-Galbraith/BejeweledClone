@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace TSwapper { 
+    /// <summary>
+    /// Handles the superficial parts of the game including score counting, effects, and winning/losing.
+    /// </summary>
     public class GameManager : MonoBehaviour
     {
         public TileManager tileManager;
@@ -36,6 +39,7 @@ namespace TSwapper {
         public AudioSource ScoreCompleteEffect;
 
         #region effect tweens
+        //Animates the score bar star
         IEnumerator AnimateStar() {
             float cTime = 0;
             while (cTime < 1) {
@@ -45,6 +49,7 @@ namespace TSwapper {
             }
         }
 
+        //Used for animating the tile facades
         IEnumerator AnimateMaterial(List<TileFacade> facades) {
             facadeMaterial.SetFloat("_WormholeRadius", 0);
             facadeMaterial.SetVector("_WormholePos", Camera.main.WorldToViewportPoint(starTransform.position)*2-Vector3.one);
@@ -72,14 +77,15 @@ namespace TSwapper {
 
         private int breaksThisTurn = 0;
 
+        //Turn callback
         private void OnTurn() {
             currentTurns.Value--;
+            //Reset out breaks counter
             breaksThisTurn = 1;
+            //Stop pair finding as pairs will have changed
             pairsFound = false;
             StopCoroutine(pairCoroutine);
             pairingInProgress = false;
-
-            
         }
 
         private void OnTilesBroken(IEnumerator<Tile> tiles) {
@@ -92,8 +98,9 @@ namespace TSwapper {
             DestroyedEffect.pitch = basePitch * Mathf.Pow(1.1f, breaksThisTurn-1);
             DestroyedEffect.Play();
             
-            //This creates an anourmous amount of work for the garbage collector and I shouldnt be doing it.
+            //This creates an enourmous amount of work for the garbage collector and I shouldnt be doing it.
             List<TileFacade> facades = new List<TileFacade>();
+            //Look at each tile broken, create a facade, start any effects
             while(tiles.MoveNext()) {
                 count++;
                 Tile t = tiles.Current;
@@ -112,14 +119,14 @@ namespace TSwapper {
                 absorbSystem.Play();
 
                 if (t.isComplex) {
-                    //effect
+                    //VFX
                     if (t.onDeathParticle != VFXType.None) {
                         var eff = effectManager.GetEffect(t.onDeathParticle);
                         eff.transform.position = t.transform.position;
                         eff.Play();
                     }
 
-                    //effect
+                    //SFX
                     if (t.onDeathSound != AudioPool.SFXType.None) {
                         pool[t.onDeathSound].Play();
                     }
@@ -130,6 +137,7 @@ namespace TSwapper {
             if (currentScore.Value + (int)(accum * mult) >= goalScore.Value && currentScore.Value < goalScore.Value) {
                 ScoreCompleteEffect.Play();
             }
+            //increment score
             currentScore.Value += (int)(accum * mult);
             
         }
@@ -144,6 +152,7 @@ namespace TSwapper {
             StartCoroutine(FindPairs());
             basePitch = DestroyedEffect.pitch;
         }
+
         //unsub from events
         private void OnDestroy() {
             tileManager.TilesDestroyed -= OnTilesBroken;
@@ -156,7 +165,7 @@ namespace TSwapper {
             pauseRef.UnPause();
         }
 
-        // Update is called once per frame
+        //Janky way to stop our pair finding and end the game
         void Update()
         {
             if (queueLengthRef.Value > 0) {
@@ -173,6 +182,7 @@ namespace TSwapper {
             }
         }
 
+        //End the game, used in an Invoke in Update
         private void LateEndGame() {
             queueLengthRef.Value -= 1;
             pauseRef.Pause();
@@ -192,6 +202,8 @@ namespace TSwapper {
         IEnumerator pairCoroutine;
         private bool pairsFound;
         private bool pairingInProgress;
+
+        //Called when pairing checking is complete
         private void PairCallback() {
             if (pairingInProgress == false)
                 return;
@@ -202,6 +214,7 @@ namespace TSwapper {
                 //We didnt find any pairs, shuffle
                 StartCoroutine(tileManager.ShuffleTiles());
             }
+            //We did find pairs, make them gleam
             else {
                 foreach (var pair in pairs) {
                     pair.a.SetGleaming(true);
@@ -209,14 +222,14 @@ namespace TSwapper {
                 }
             }
         }
-
+        //Finding possible moves coroutine
         IEnumerator FindPairs() {
-            //Testing code
             while (true) {
                 if (queueLengthRef.Value > 0)
                     yield return null;
                 if(!pairingInProgress && !pairsFound) {
                     pairingInProgress = true;
+                    //Stop current pairs from gleaming
                     foreach (var pair in pairs) {
                         pair.a.SetGleaming(false);
                         pair.b.SetGleaming(false);

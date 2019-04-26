@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TSwapper { 
     /// <summary>
-    /// Contains basic tile spawning, shifting, and matching rules.
+    /// Contains basic tile spawning, shifting, and matching rules and algorithms.
     /// </summary>
     public class TileManager : MonoBehaviour
     {
@@ -63,6 +63,7 @@ namespace TSwapper {
             CalcWeights();
         }
         
+        //Calc weights of spawnables
         private void CalcWeights() {
             weightSum = 0;
             for (int i = 0; i < spawnables.Length; i++) {
@@ -116,7 +117,14 @@ namespace TSwapper {
                 queue.ActionComplete(id);
             });
         }
-        public List<Tile> RepairColumn(int xPos, bool spawnNew = true) {
+
+        /// <summary>
+        /// Repair a column, sliding tiles downwards and adding new tiles if spawnNew is true.
+        /// </summary>
+        /// <param name="xPos">xPos of column.</param>
+        /// <param name="spawnNew">Spawn new tiles in gaps?</param>
+        /// <returns></returns>
+        private List<Tile> RepairColumn(int xPos, bool spawnNew = true) {
             int top = tileGrid.dimensions.y;
             int botGap = 0;
             int topGap = 0;
@@ -216,6 +224,11 @@ namespace TSwapper {
             
         }
 
+        /// <summary>
+        /// Destroy a set of tiles, activating destruction callbacks.
+        /// </summary>
+        /// <param name="tiles">Enumerator over Tiles to destory</param>
+        /// <param name="JumpQueue">Push the destruction to the head of the queue?</param>
         public void DestroyTiles(IEnumerator<Tile> tiles, bool JumpQueue=false) {
             tiles.Reset();
             while (tiles.MoveNext()) {
@@ -350,6 +363,9 @@ namespace TSwapper {
             tilePool.ReturnTile(tileGrid.RemoveTile(x, y));
         }
 
+        /// <summary>
+        /// Populates the play area with gems
+        /// </summary>
         public void PopulateAll() {
             for (int dx = 0; dx < tileGrid.dimensions.x; dx++) {
                 for (int dy = 0; dy < tileGrid.dimensions.y; dy++) {
@@ -475,6 +491,7 @@ namespace TSwapper {
             }
         }
 
+        //check if we can swap two tiles, and if so, add them to the list ret.
         private void CheckSwapAndAdd(int x, int y, int dx, int dy, HashSet<TilePair> ret) {
             bool matchA, matchB;
             tileGrid.SwapTiles(x, y, x + dx, y + dy);
