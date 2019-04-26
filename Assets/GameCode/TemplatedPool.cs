@@ -1,5 +1,4 @@
-﻿#define SAFE_MODE
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
