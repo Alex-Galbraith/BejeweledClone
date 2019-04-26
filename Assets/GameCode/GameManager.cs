@@ -53,6 +53,7 @@ namespace TSwapper {
             }
         }
 
+        //Pulse facades
         IEnumerator ScaleFacades(List<TileFacade> facades) {
             float cTime = 0;
             while (cTime < 1) {
