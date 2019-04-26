@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TSwapper { 
     /// <summary>
-    /// Enum for types of poolable vfx
+    /// Enum for types of poolable VFX.
     /// </summary>
     public enum VFXType{
         None,
