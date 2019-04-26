@@ -18,6 +18,7 @@ namespace TSwapper {
         
         private TemplatedPool<TileFacade, Tile> facadePool;
         [Header("Effect settings")]
+        public EffectManager effectManager;
         public TileFacade facadePrefab;
         public Material facadeMaterial;
         public ParticleSystem absorbSystem;
@@ -29,6 +30,7 @@ namespace TSwapper {
         public GameObject EnableOnWin;
         public GameObject EnableOnLose;
         [Header("SFX")]
+        public AudioPool pool;
         public AudioSource DestroyedEffect;
         private float basePitch;
         public AudioSource ScoreCompleteEffect;
@@ -86,7 +88,6 @@ namespace TSwapper {
             int count = 0;
             Vector3 center = Vector3.zero;
             tiles.Reset();
-            Debug.Log("Played");
             breaksThisTurn++;
             DestroyedEffect.pitch = basePitch * Mathf.Pow(1.1f, breaksThisTurn-1);
             DestroyedEffect.Play();
@@ -109,6 +110,20 @@ namespace TSwapper {
                 StartCoroutine(AnimateMaterial(facades));
                 StartCoroutine(AnimateStar());
                 absorbSystem.Play();
+
+                if (t.isComplex) {
+                    //effect
+                    if (t.onDeathParticle != VFXType.None) {
+                        var eff = effectManager.GetEffect(t.onDeathParticle);
+                        eff.transform.position = t.transform.position;
+                        eff.Play();
+                    }
+
+                    //effect
+                    if (t.onDeathSound != AudioPool.SFXType.None) {
+                        pool[t.onDeathSound].Play();
+                    }
+                }
             }
             center /= count;
             //play sound effect when goal reached

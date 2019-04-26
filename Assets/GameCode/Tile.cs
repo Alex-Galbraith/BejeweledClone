@@ -29,22 +29,16 @@ namespace TSwapper {
         public bool isComplex = false;
 
         /// <summary>
-        /// Is this a basic matching tile, or does it have special
-        /// match conditions. Will call CheckMatch if true;
-        /// </summary>
-        public bool isComplexMatch = false;
-
-        /// <summary>
         /// This particle will be automatically triggered on death.
         /// </summary>
         [Tooltip("This particle will be automatically triggered on death.")]
-        public ParticleSystem onDeathParticle;
+        public VFXType onDeathParticle;
 
         /// <summary>
         /// This sound will be automatically played on death.
         /// </summary>
         [Tooltip("This sound will be automatically played on death.")]
-        public AudioClip onDeathSound;
+        public AudioPool.SFXType onDeathSound;
 
         /// <summary>
         /// How much is destroying this tile worth?
@@ -87,18 +81,6 @@ namespace TSwapper {
             if (spriteRenderer == null)
                 spriteRenderer = GetComponent<SpriteRenderer>();
             mpb = new MaterialPropertyBlock();
-        }
-
-        /// <summary>
-        /// Check if this block has a match. Populates the specified array with
-        /// the matching tiles. Array must have space for all matched tiles.
-        /// </summary>
-        /// <param name="t">Tilegrid we are checking.</param>
-        /// <param name="array">Array to populate with matched tiles. Must have space for all
-        /// matched tiles. Non allocating.</param>
-        /// <returns>Number of tiles matched</returns>
-        public virtual int CheckMatch(TileManager tm, Tile[] array) {
-            return 0;
         }
 
         /// <summary>
@@ -152,7 +134,6 @@ namespace TSwapper {
             to.tileType = this.tileType;
             to.baseScoreValue = this.baseScoreValue;
             to.isComplex = this.isComplex;
-            to.isComplexMatch = this.isComplexMatch;
             to.matchesWith = this.matchesWith;
             to.onDeathParticle = this.onDeathParticle;
         }

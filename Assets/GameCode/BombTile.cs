@@ -15,7 +15,7 @@ namespace TSwapper {
                 return;
             dead = true;
             
-            tm.queue.Enqueue(delegate(int ID) {
+            tm.queue.JumpQueue(delegate(int ID) {
                 Tile[] tileBuffer = new Tile[(explosionRadius * 2 + 1) * (explosionRadius * 2 + 1)];
                 int xPos = GridPos.x;
                 int yPos = GridPos.y;
