@@ -2488,7 +2488,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fade: {fileID: 1969445210}
   transitionTime: 0.2
-  freezeTime: 0
   playOnStart: 1
   from: {r: 0, g: 0, b: 0, a: 0}
   to: {r: 0, g: 0, b: 0, a: 0.73333335}
@@ -2937,7 +2936,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fade: {fileID: 1048176852}
   transitionTime: 0.5
-  freezeTime: 0
   playOnStart: 1
   from: {r: 0, g: 0, b: 0, a: 1}
   to: {r: 0, g: 0, b: 0, a: 0}
@@ -3339,7 +3337,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fade: {fileID: 1284984341}
   transitionTime: 0.3
-  freezeTime: 0
   playOnStart: 1
   from: {r: 0, g: 0, b: 0, a: 0}
   to: {r: 0, g: 0, b: 0, a: 0.9019608}
@@ -3377,8 +3374,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0000076294, y: -267}
-  m_SizeDelta: {x: 886.1, y: 719.1}
+  m_AnchoredPosition: {x: -0.0000076294, y: -65.89993}
+  m_SizeDelta: {x: 886.1, y: 858.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1185740779
 MonoBehaviour:
@@ -3414,8 +3411,8 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "Code and UI: Alex Galbraith\n\nGem Sprites: Ville Seppanen\n\nGame Sounds:
-    Dustyroom\r\n\nUI Sounds: raisedbeaches.com, freesound.org/people/ TreasureSounds\n\nMusic:
-    bensound.com"
+    Dustyroom\r\n\nUI Sounds: raisedbeaches.com, freesound.org/people/ TreasureSounds,
+    freesound.org/people/jobro\n\nMusic: bensound.com"
 --- !u!222 &1185740780
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3824,7 +3821,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1284984340
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3896,7 +3893,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fade: {fileID: 1284984341}
   transitionTime: 0.5
-  freezeTime: 0
   playOnStart: 0
   from: {r: 0, g: 0, b: 0, a: 0.9019608}
   to: {r: 0, g: 0, b: 0, a: 0}
@@ -4811,7 +4807,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fade: {fileID: 1969445210}
   transitionTime: 0
-  freezeTime: 0
   playOnStart: 0
   from: {r: 0, g: 0, b: 0, a: 0.73333335}
   to: {r: 0, g: 0, b: 0, a: 0}
@@ -4978,7 +4973,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000005722, y: 200}
+  m_AnchoredPosition: {x: 0.000005722, y: 471}
   m_SizeDelta: {x: 1028.1, y: 154.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2040386969
