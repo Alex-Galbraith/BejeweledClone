@@ -22204,6 +22204,21 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 564657753549336880, guid: 75bba972f7028bb42806f693aaa05c20,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 564657753427670698, guid: 75bba972f7028bb42806f693aaa05c20,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 564657754697915366, guid: 75bba972f7028bb42806f693aaa05c20,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1874163343565259785, guid: 75bba972f7028bb42806f693aaa05c20, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 75bba972f7028bb42806f693aaa05c20, type: 3}
