@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41823e3ca0d90bc458fd9b8062972500, type: 3}
   m_Name: Level1 GoalScore
   m_EditorClassIdentifier: 
-  _value: 150
+  _value: 300
