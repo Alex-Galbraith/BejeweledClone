@@ -28,6 +28,7 @@ namespace TSwapper {
         public RectTransform starTransform;
         public AnimationCurve starSize;
         public AnimationCurve wormholeRadius;
+        public AnimationCurve facadeSize;
         [Header("UI settings")]
         public GameObject EnableOnComplete;
         public GameObject EnableOnWin;
@@ -38,9 +39,12 @@ namespace TSwapper {
         private float basePitch;
         public AudioSource ScoreCompleteEffect;
 
+        private float animationPause = 0.1f;
+
         #region effect tweens
         //Animates the score bar star
         IEnumerator AnimateStar() {
+            yield return new WaitForSeconds(animationPause);
             float cTime = 0;
             while (cTime < 1) {
                 cTime += Time.deltaTime * 2f;
@@ -49,15 +53,33 @@ namespace TSwapper {
             }
         }
 
+        IEnumerator ScaleFacades(List<TileFacade> facades) {
+            float cTime = 0;
+            while (cTime < 1) {
+                cTime += Time.deltaTime / (animationPause*2f);
+                foreach (var f in facades) {
+                    f.transform.localScale = Vector3.one * facadeSize.Evaluate(cTime);
+                }
+                yield return null;
+            }
+        }
+
         //Used for animating the tile facades
         IEnumerator AnimateMaterial(List<TileFacade> facades) {
-            facadeMaterial.SetFloat("_WormholeRadius", 0);
+
+            if (facades.Count == 0) {
+                yield break;
+            }
             facadeMaterial.SetVector("_WormholePos", Camera.main.WorldToViewportPoint(starTransform.position)*2-Vector3.one);
             MaterialPropertyBlock mpb = new MaterialPropertyBlock();
             facades[0].spriteRenderer.GetPropertyBlock(mpb);
+            mpb.SetFloat("_WormholeRadius", -100);
             foreach (var f in facades) {
                 f.spriteRenderer.SetPropertyBlock(mpb);
             }
+
+            yield return new WaitForSeconds(animationPause);
+
             float cTime = 0;
             while (cTime < 1) {
                 cTime += Time.deltaTime * 2f;
@@ -97,7 +119,7 @@ namespace TSwapper {
             breaksThisTurn++;
             DestroyedEffect.pitch = basePitch * Mathf.Pow(1.1f, breaksThisTurn-1);
             DestroyedEffect.Play();
-            
+
             //This creates an enourmous amount of work for the garbage collector and I shouldnt be doing it.
             List<TileFacade> facades = new List<TileFacade>();
             //Look at each tile broken, create a facade, start any effects
@@ -114,8 +136,7 @@ namespace TSwapper {
                 tf.gameObject.SetActive(true);
                 tf.spriteRenderer.sharedMaterial = facadeMaterial;
                 facades.Add(tf);
-                StartCoroutine(AnimateMaterial(facades));
-                StartCoroutine(AnimateStar());
+                
                 absorbSystem.Play();
 
                 //VFX
@@ -130,6 +151,11 @@ namespace TSwapper {
                     pool[t.onDeathSound].Play();
                 }
             }
+
+            StartCoroutine(AnimateMaterial(facades));
+            StartCoroutine(ScaleFacades(facades));
+            StartCoroutine(AnimateStar());
+
             center /= count;
             //play sound effect when goal reached
             if (currentScore.Value + (int)(accum * mult) >= goalScore.Value && currentScore.Value < goalScore.Value) {

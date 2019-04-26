@@ -7571,6 +7571,39 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  facadeSize:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 1.359234
+      outSlope: 1.359234
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.20555913
+      value: 1.279403
+      inSlope: 0.36847273
+      outSlope: 0.36847273
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.3318451
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.99845433
+      value: 0.50000006
+      inSlope: -0.9829835
+      outSlope: -0.9829835
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   EnableOnComplete: {fileID: 872722998}
   EnableOnWin: {fileID: 490281152}
   EnableOnLose: {fileID: 2001678131}
@@ -20521,7 +20554,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.02
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
