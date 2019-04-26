@@ -42,7 +42,9 @@ namespace TSwapper {
         private float animationPause = 0.1f;
 
         #region effect tweens
-        //Animates the score bar star
+        /// <summary>
+        /// Animates the score bar star.
+        /// </summary>
         IEnumerator AnimateStar() {
             yield return new WaitForSeconds(animationPause);
             float cTime = 0;
@@ -52,8 +54,9 @@ namespace TSwapper {
                 yield return null;
             }
         }
-
-        //Pulse facades
+        /// <summary>
+        /// Pulse facades
+        /// </summary>
         IEnumerator ScaleFacades(List<TileFacade> facades) {
             float cTime = 0;
             while (cTime < 1) {
@@ -64,8 +67,9 @@ namespace TSwapper {
                 yield return null;
             }
         }
-
-        //Used for animating the tile facades
+        /// <summary>
+        /// Used for animating the tile facades.
+        /// </summary>
         IEnumerator AnimateMaterial(List<TileFacade> facades) {
 
             if (facades.Count == 0) {
@@ -99,8 +103,9 @@ namespace TSwapper {
         #endregion
 
         private int breaksThisTurn = 0;
-
-        //Turn callback
+        /// <summary>
+        /// Turn callback.
+        /// </summary>
         private void OnTurn() {
             currentTurns.Value--;
             //Reset out breaks counter
@@ -110,7 +115,10 @@ namespace TSwapper {
             StopCoroutine(pairCoroutine);
             pairingInProgress = false;
         }
-
+        /// <summary>
+        /// Tiles broken callback.
+        /// </summary>
+        /// <param name="tiles">Tiles broken</param>
         private void OnTilesBroken(IEnumerator<Tile> tiles) {
             int accum = 0;
             float mult = 1;
@@ -166,8 +174,9 @@ namespace TSwapper {
             currentScore.Value += (int)(accum * mult);
             
         }
-
-        // Start is called before the first frame update
+        ///<summary>
+        ///Setup manager.
+        ///</summary>
         void Start()
         {
             tileManager.TilesDestroyed += OnTilesBroken;
@@ -177,8 +186,9 @@ namespace TSwapper {
             StartCoroutine(FindPairs());
             basePitch = DestroyedEffect.pitch;
         }
-
-        //unsub from events
+        ///<summary>
+        ///Unsub from events.
+        ///</summary>
         private void OnDestroy() {
             tileManager.TilesDestroyed -= OnTilesBroken;
             tileManager.SuccessfulMove -= OnTurn;
@@ -189,8 +199,9 @@ namespace TSwapper {
             currentTurns.Value = startingTurns;
             pauseRef.UnPause();
         }
-
-        //Janky way to stop our pair finding and end the game
+        ///<summary>
+        ///Janky way to stop our pair finding and end the game.
+        ///</summary>
         void Update()
         {
             if (queueLengthRef.Value > 0) {
@@ -206,8 +217,9 @@ namespace TSwapper {
                 }
             }
         }
-
-        //End the game, used in an Invoke in Update
+        ///<summary>
+        ///End the game, used in an Invoke in Update
+        ///</summary>
         private void LateEndGame() {
             queueLengthRef.Value -= 1;
             pauseRef.Pause();
@@ -224,11 +236,13 @@ namespace TSwapper {
         }
 
         private HashSet<TileManager.TilePair> pairs = new HashSet<TileManager.TilePair>();
-        IEnumerator pairCoroutine;
+        private IEnumerator pairCoroutine;
         private bool pairsFound;
         private bool pairingInProgress;
 
-        //Called when pairing checking is complete
+        ///<summary>
+        ///Called when pairing checking is complete
+        ///</summary>
         private void PairCallback() {
             if (pairingInProgress == false)
                 return;
@@ -247,7 +261,9 @@ namespace TSwapper {
                 }
             }
         }
-        //Finding possible moves coroutine
+        ///<summary>
+        ///Finding possible moves coroutine
+        ///</summary>
         IEnumerator FindPairs() {
             while (true) {
                 if (queueLengthRef.Value > 0)
