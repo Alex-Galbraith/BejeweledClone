@@ -118,18 +118,16 @@ namespace TSwapper {
                 StartCoroutine(AnimateStar());
                 absorbSystem.Play();
 
-                if (t.isComplex) {
-                    //VFX
-                    if (t.onDeathParticle != VFXType.None) {
-                        var eff = effectManager.GetEffect(t.onDeathParticle);
-                        eff.transform.position = t.transform.position;
-                        eff.Play();
-                    }
+                //VFX
+                if (t.onDeathParticle != VFXType.None) {
+                    var eff = effectManager.GetEffect(t.onDeathParticle);
+                    eff.transform.position = t.transform.position;
+                    eff.Play();
+                }
 
-                    //SFX
-                    if (t.onDeathSound != AudioPool.SFXType.None) {
-                        pool[t.onDeathSound].Play();
-                    }
+                //SFX
+                if (t.onDeathSound != AudioPool.SFXType.None) {
+                    pool[t.onDeathSound].Play();
                 }
             }
             center /= count;

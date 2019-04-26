@@ -16,3 +16,17 @@ MonoBehaviour:
   - type: 1
     system: {fileID: 1874163343565259785, guid: faa75c7ffa724b346b4d7d37851bf842,
       type: 3}
+  - type: 2
+    system: {fileID: 5682741767659183027, guid: 4387e1e2b86ae664fbfbc78d0e256dec,
+      type: 3}
+  - type: 3
+    system: {fileID: 632090733653015600, guid: d0df5cc7f8a0b264bbcb8ee9f58bdc39, type: 3}
+  - type: 4
+    system: {fileID: 4945329179572663060, guid: ea1fcf02591e3784f87cbefdc0c51e20,
+      type: 3}
+  - type: 5
+    system: {fileID: 1109059055361946001, guid: cd281870e0f498a49aa0fed457ad3a16,
+      type: 3}
+  - type: 6
+    system: {fileID: 2633153264281383528, guid: 6b9cf9787f5cb744e939bd6d9d6e819b,
+      type: 3}

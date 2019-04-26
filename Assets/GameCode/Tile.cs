@@ -29,13 +29,13 @@ namespace TSwapper {
         public bool isComplex = false;
 
         /// <summary>
-        /// This particle will be automatically triggered on death. Only plays if isComplex.
+        /// This particle will be automatically triggered on death.
         /// </summary>
         [Tooltip("This particle will be automatically triggered on death.")]
         public VFXType onDeathParticle;
 
         /// <summary>
-        /// This sound will be automatically played on death. Only plays if isComplex.
+        /// This sound will be automatically played on death.
         /// </summary>
         [Tooltip("This sound will be automatically played on death.")]
         public AudioPool.SFXType onDeathSound;

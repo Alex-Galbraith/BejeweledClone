@@ -8,6 +8,11 @@ namespace TSwapper {
     /// </summary>
     public enum VFXType{
         None,
-        Explosion
+        Explosion,
+        RedParticle,
+        GreenParticle,
+        BlueParticle,
+        PurpleParticle,
+        YellowParticle
     }
 }

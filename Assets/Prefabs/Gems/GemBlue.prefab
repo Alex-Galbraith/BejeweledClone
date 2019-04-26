@@ -96,7 +96,7 @@ MonoBehaviour:
   poolGroup: 0
   matchesWith: 4
   isComplex: 0
-  onDeathParticle: 0
+  onDeathParticle: 4
   onDeathSound: 0
   baseScoreValue: 1
   scoreMultiplier: 1.05

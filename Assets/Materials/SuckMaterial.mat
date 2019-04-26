@@ -81,4 +81,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _WormholePos: {r: -0.7200337, g: 0.69791675, b: 199.21422, a: 0}
+    - _WormholePos: {r: -0.7203932, g: 0.69791675, b: 199.21422, a: 0}
