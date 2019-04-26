@@ -24,8 +24,6 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -61,13 +59,15 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
+				//sample base texture
                 fixed4 col = tex2D(_MainTex, i.uv) * i.color;
+				//Scroll the effect
 				float _EffectPos = (_Time[0] * _EffectSpeed) % (_EffectMax - _EffectMin) + _EffectMin;
+				//Project the effect onto the vector (sqrt(2),sqrt(2))
 				float eff = i.vpos.x * 1.414 + i.vpos.y * 1.414 + _EffectPos;
+				//Sample ramp color
 				fixed4 wcol = tex2D(_Ramp, float2(eff*_EffectScale,0.5));
-
-				fixed4 outC = col;
+				//Add a mixture of base texture and ramp color
 				col.rgb = col.rgb + _EffectToggle*(col.rgb * wcol.rgb * wcol.a * _EffectMult + wcol.rgb * wcol.a * _EffectStrength);
 
 				return col;

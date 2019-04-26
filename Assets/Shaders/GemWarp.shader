@@ -50,9 +50,12 @@
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
+				//Get distance to the edge of the wormhole, scaled by _EffectScale
 				float d = (length(o.vertex.xy - _WormholePos.xy) - _WormholeRadius)/ _EffectScale;
+				//Lerp our vertex towards the wormhole
 				o.vertex.xy = lerp(_WormholePos.xy, o.vertex.xy, saturate(d));
 				o.wormEffect = 1 - saturate(d);
+				//Texture scaling/offset
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				//transfer vertex color
 				o.color = v.color;
@@ -63,9 +66,9 @@
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv) * i.color;
+				//sample ramp
 				fixed4 wcol = tex2D(_Ramp, float2(i.wormEffect,0.5));
-
-				fixed4 outC = col;
+				//lerp our fragment color towards the ramp color based on wormEffect
 				col.rgb = lerp(col.rgb, wcol.rgb, wcol.a * i.wormEffect);
 
 				return col;
